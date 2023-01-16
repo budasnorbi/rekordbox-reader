@@ -8,3 +8,5 @@ I only have DDJ-FLX4 so the project only tested them mentioned device and rekord
 
 I also included a Node.js project, so you can check which controller events has been implemented so far.
 See the projects description in their respective folder.
+
+If you need more features, feel free to create a new issue about it.
