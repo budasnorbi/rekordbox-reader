@@ -2,12 +2,21 @@
 #include <iostream>
 #include<stdio.h>
 #include <string>
+#include <thread>
+
+
+
+std::vector<std::thread> threadpool;
+bool running;
+ProcessReader reader;
 
 
 int main() {
 
+	running = false;
+	threadpool = std::vector<std::thread>(3);
 
-	ProcessReader reader = ProcessReader(L"rekordbox.exe");
+	reader = ProcessReader(L"rekordbox.exe");
 
 	while (true)
 	{
