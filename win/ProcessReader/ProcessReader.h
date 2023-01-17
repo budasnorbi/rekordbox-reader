@@ -7,6 +7,7 @@
 #include "RekordBoxData.h"
 #include <iostream>
 #include "UdpClient.h"
+#include "TcpClient.h"
 
 
 class ProcessReader
@@ -81,6 +82,7 @@ private:
 	uintptr_t FindDMAAddy(uintptr_t ptr, std::vector<unsigned int> offsets);
 
 	UdpClient udpClient;
+	TcpClient tcpClient;
 
 	void readBinaryValues();
 	void readDoubleValues();

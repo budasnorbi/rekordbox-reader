@@ -15,6 +15,7 @@ int main() {
 		//reader.printToConsole();
 
 		reader.sendOnUdpSocket();
+		reader.sendOnTcpSocket();
 
 	}
 

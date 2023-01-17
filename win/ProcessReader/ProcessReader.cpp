@@ -37,7 +37,20 @@ void ProcessReader::sendOnUdpSocket()
 
 void ProcessReader::sendOnTcpSocket()
 {
-	//TODO: Finish
+	for (size_t i = 0; i < this->recordBoxBites.size(); i++)
+	{
+		std::vector<unsigned char> sendData = this->recordBoxBites[i].data;
+		sendData.insert(sendData.begin(), this->recordBoxBites[i].opCode);
+
+		int result = this->tcpClient.sendPacket((char*)sendData.data(), sendData.size());
+
+		if (result == SOCKET_ERROR)
+		{
+			std::cout << "SOCKET_ERROR\n" << WSAGetLastError() << std::endl;
+
+			throw "Error";
+		}
+	}
 }
 
 DWORD ProcessReader::GetProcessId()
