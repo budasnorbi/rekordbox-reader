@@ -40,7 +40,7 @@ void ProcessReader::sendOnTcpSocket()
 {
 	for (size_t i = 0; i < this->recordBoxBites.size(); i++)
 	{
-		if (!recordBoxBites[i].locked) {
+		if (!recordBoxBites[i].locked && this->tcpClient.connected) {
 
 			std::vector<unsigned char> sendData = this->recordBoxBites[i].data;
 			sendData.insert(sendData.begin(), this->recordBoxBites[i].opCode);

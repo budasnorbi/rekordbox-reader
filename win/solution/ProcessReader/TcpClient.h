@@ -9,6 +9,7 @@ public:
 
 	TcpClient()
 	{
+		connected = false;
 		WSAData data;
 		WORD version = MAKEWORD(2, 2);
 
@@ -20,6 +21,7 @@ public:
 		this->connectToServer();
 	}
 
+	bool connected;
 
 	int sendPacket(char* message, int packetSize) override;
 
@@ -33,6 +35,8 @@ private:
 	sockaddr_in server;
 	SOCKET tcpSock;
 	void connectToServer() override;
+
+	
 
 };
 
