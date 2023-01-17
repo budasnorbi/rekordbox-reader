@@ -141,7 +141,6 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="main.cpp" />
-    <ClCompile Include="proc.cpp" />
     <ClCompile Include="ProcessReader.cpp" />
     <ClCompile Include="RekordBoxData.cpp" />
     <ClCompile Include="ServerConnection.cpp" />

@@ -14,9 +14,6 @@
     <ClCompile Include="main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="proc.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="ProcessReader.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
