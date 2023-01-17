@@ -17,19 +17,20 @@ void ProcessReader::sendOnUdpSocket()
 
 	for (size_t i = 0; i < this->recordBoxDoubles.size(); i++)
 	{
+		if (!recordBoxDoubles[i].locked) {
+			std::vector<unsigned char> sendData = this->recordBoxDoubles[i].data;
+			sendData.insert(sendData.begin(), this->recordBoxDoubles[i].opCode);
 
-		std::vector<unsigned char> sendData = this->recordBoxDoubles[i].data;
-		sendData.insert(sendData.begin(), this->recordBoxDoubles[i].opCode);
+			int result = this->udpClient.sendPacket((char*)sendData.data(), sendData.size());
 
-		int result = this->udpClient.sendPacket((char*)sendData.data(), sendData.size());
+			if (result == SOCKET_ERROR)
+			{
+				std::cout << "SOCKET_ERROR\n" << WSAGetLastError() << std::endl;
 
-		if (result == SOCKET_ERROR)
-		{
-			std::cout << "SOCKET_ERROR\n" << WSAGetLastError() << std::endl;
+				throw "Error";
+			}
 
-			throw "Error";
 		}
-			
 
 	}
 
@@ -39,16 +40,20 @@ void ProcessReader::sendOnTcpSocket()
 {
 	for (size_t i = 0; i < this->recordBoxBites.size(); i++)
 	{
-		std::vector<unsigned char> sendData = this->recordBoxBites[i].data;
-		sendData.insert(sendData.begin(), this->recordBoxBites[i].opCode);
+		if (!recordBoxBites[i].locked) {
 
-		int result = this->tcpClient.sendPacket((char*)sendData.data(), sendData.size());
+			std::vector<unsigned char> sendData = this->recordBoxBites[i].data;
+			sendData.insert(sendData.begin(), this->recordBoxBites[i].opCode);
 
-		if (result == SOCKET_ERROR)
-		{
-			std::cout << "SOCKET_ERROR\n" << WSAGetLastError() << std::endl;
+			int result = this->tcpClient.sendPacket((char*)sendData.data(), sendData.size());
 
-			throw "Error";
+			if (result == SOCKET_ERROR)
+			{
+				std::cout << "SOCKET_ERROR\n" << WSAGetLastError() << std::endl;
+
+				throw "Error";
+			}
+
 		}
 	}
 }
@@ -119,15 +124,27 @@ void ProcessReader::readBinaryValues()
 {
 	for (size_t i = 0; i < this->recordBoxBites.size(); i++)
 	{
-		BYTE* _addr = (BYTE*)recordBoxBites[i].addr;
 
-		std::vector<unsigned char> new_data;
+		recordBoxBites[i].locked = true;
 
-		new_data.resize(recordBoxBites[i].size);
 
-		ReadProcessMemory(hProcess, (BYTE*)recordBoxBites[i].addr, new_data.data(), new_data.size(), nullptr);
+		if (recordBoxBites[i].locked)
+		{
 
-		recordBoxBites[i].data = new_data;
+			BYTE* _addr = (BYTE*)recordBoxBites[i].addr;
+
+			std::vector<unsigned char> new_data;
+
+			new_data.resize(recordBoxBites[i].size);
+
+			ReadProcessMemory(hProcess, (BYTE*)recordBoxBites[i].addr, new_data.data(), new_data.size(), nullptr);
+
+			recordBoxBites[i].data = new_data;
+
+
+			recordBoxBites[i].locked = false;
+		}
+
 	}
 }
 
@@ -136,15 +153,26 @@ void ProcessReader::readDoubleValues()
 
 	for (size_t i = 0; i < this->recordBoxDoubles.size(); i++)
 	{
-		BYTE* _addr = (BYTE*)recordBoxDoubles[i].addr;
+		recordBoxDoubles[i].locked = true;
 
-		std::vector<unsigned char> new_data;
+		if (recordBoxDoubles[i].locked)
+		{
 
-		new_data.resize(recordBoxDoubles[i].size);
+			BYTE* _addr = (BYTE*)recordBoxDoubles[i].addr;
 
-		ReadProcessMemory(hProcess, (BYTE*)recordBoxDoubles[i].addr, new_data.data(), new_data.size(), nullptr);
+			std::vector<unsigned char> new_data;
 
-		recordBoxDoubles[i].data = new_data;
+			new_data.resize(recordBoxDoubles[i].size);
+
+			ReadProcessMemory(hProcess, (BYTE*)recordBoxDoubles[i].addr, new_data.data(), new_data.size(), nullptr);
+
+			recordBoxDoubles[i].data = new_data;
+
+			recordBoxDoubles[i].locked = false;
+		}
+
+
+
 	}
 }
 
@@ -156,7 +184,7 @@ void ProcessReader::printBinaryValues()
 
 		memcpy(&d_data, recordBoxBites[i].data.data(), recordBoxBites[i].size);
 
-		std::cout << recordBoxBites[i].description << " : " << (d_data % 2)  << std::endl; //Convert to binary
+		std::cout << recordBoxBites[i].description << " : " << (d_data % 2) << std::endl; //Convert to binary
 	}
 }
 

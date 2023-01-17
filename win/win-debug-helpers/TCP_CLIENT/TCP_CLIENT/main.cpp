@@ -93,6 +93,9 @@ int __cdecl main(void)
     // No longer need server socket
     closesocket(ListenSocket);
 
+
+    printf("Server is listening\n");
+
     // Receive until the peer shuts down the connection
     do {
 
@@ -106,8 +109,7 @@ int __cdecl main(void)
 
             std::cout << (int)opCode << " : " << (d_data % 2) << std::endl;
 
-         
-
+  
         }
         else if (iResult == 0)
             printf("Connection closing...\n");

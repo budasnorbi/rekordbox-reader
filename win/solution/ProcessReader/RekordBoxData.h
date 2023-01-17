@@ -12,6 +12,7 @@ public:
 	uintptr_t addr;
 	std::vector<unsigned char> data;
 	std::string description;
+	bool locked;
 	
 
 	RekordBoxData(std::string _description, int _opCode, uintptr_t _addr)
