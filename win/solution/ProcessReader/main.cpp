@@ -41,8 +41,6 @@ void sendTCP(bool* running, ProcessReader* reader)
 
 }
 
-
-
 int main() 
 {
 
