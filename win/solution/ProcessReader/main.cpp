@@ -6,7 +6,6 @@
 #include <thread>
 
 
-
 void readMemory(bool* running, ProcessReader* reader)
 {
 	while (*running)
@@ -43,7 +42,6 @@ void sendTCP(bool* running, ProcessReader* reader)
 
 int main() 
 {
-
 	std::cout << "REKORDBOX READER v0.5 (for Windows)" << std::endl;
 	std::cout << "Supports rekordbox 6.6.8" << std::endl;
 
