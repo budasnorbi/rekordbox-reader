@@ -5,7 +5,7 @@
 #include <chrono>
 #include <thread>
 
-
+// Reads memory for immidiate access
 void readMemory(bool* running, ProcessReader* reader)
 {
 	while (*running)
@@ -27,7 +27,7 @@ void sendUDP(bool* running, ProcessReader* reader)
 
 }
 
-// Sends packet on TCP ( if awailable
+// Sends packet on TCP ( if available ) 
 void sendTCP(bool* running, ProcessReader* reader)
 {
 
@@ -75,6 +75,7 @@ int main()
 
 	}
 
+	// Stopping all threads
 	for (size_t i = 0; i < threadpool.size(); i++)
 	{
 		threadpool[i].join();

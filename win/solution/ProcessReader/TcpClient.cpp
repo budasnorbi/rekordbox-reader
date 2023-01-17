@@ -17,7 +17,6 @@ void TcpClient::connectToServer()
 		std::cerr << "Can't create socket, Err #" << WSAGetLastError() << std::endl;
 		WSACleanup();
 		
-
 		throw "Error";
 	}
 
