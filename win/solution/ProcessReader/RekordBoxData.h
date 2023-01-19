@@ -11,9 +11,10 @@ public:
 	unsigned int size;
 	uintptr_t addr;
 	std::vector<unsigned char> data;
-	std::string description;
-	bool locked;
-	bool shouldSend;
+	std::string description; // Description for debug purposes
+	
+	bool locked; // If it is locked from sending ( because it is being written ) 
+	bool shouldSend; // Decides if it should be sent ( because of data change )
 	
 
 	RekordBoxData(std::string _description, int _opCode, uintptr_t _addr)
@@ -28,9 +29,6 @@ public:
 
 		data = std::vector<unsigned char>(this->size);
 	}
-
-
-
 
 private:
 	

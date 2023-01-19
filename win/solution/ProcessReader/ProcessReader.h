@@ -1,6 +1,6 @@
 #pragma once
 #include <string>
-#define _WINSOCKAPI_ 
+#define _WINSOCKAPI_  // Need to define it to handle multiple windows.h includes
 #include <windows.h>
 #include <TlHelp32.h>
 #include <vector>
@@ -28,12 +28,14 @@ public:
 
 		hProcess = OpenProcess(PROCESS_ALL_ACCESS, NULL, this->procId);
 
+		// Define read bites, these are send on TCP
 		recordBoxBites =
 		{
 			RekordBoxData<bool>("D1 Playing",8, FindDMAAddy(this->baseAddress + 0x03FCA690, { 0x138, 0x38, 0x68, 0x3E0, 0xF8, 0x0, 0x1A4 })),
 			RekordBoxData<bool>("D2 Playing",18, FindDMAAddy(this->baseAddress + 0x03FCA690, { 0x1D8, 0x8, 0x10, 0x60, 0x40, 0x150, 0x188 }))
 		};
 
+		// Define read doubles, these are send on UDP
 		recordBoxDoubles =
 		{
 			RekordBoxData<double>("D1 Channel Fader", 0,  FindDMAAddy(this->baseAddress + 0x03F950A8, {})),
@@ -60,7 +62,10 @@ public:
 		//TODO: Song ID : 7 , 17 -> INT 
 	}
 
+	// Reads the rekordbox.exe data, addresses are defined in the constructor
 	void ReadMemory();
+
+	// Prints the read data to console ( only for debug purposes )
 	void printToConsole();
 
 	// Sends recordBoxDoubles on UDP ( Immidiate data )
