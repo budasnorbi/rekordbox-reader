@@ -44,7 +44,9 @@ void ProcessReader::sendOnTcpSocket()
 {
 	for (size_t i = 0; i < this->recordBoxBites.size(); i++)
 	{
-		if (!recordBoxBites[i].locked && this->tcpClient.connected) {
+		if (!recordBoxBites[i].locked && this->tcpClient.connected && recordBoxBites[i].shouldSend) {
+
+			recordBoxBites[i].shouldSend = false;
 
 			std::vector<unsigned char> sendData = this->recordBoxBites[i].data;
 			sendData.insert(sendData.begin(), this->recordBoxBites[i].opCode);
@@ -143,8 +145,11 @@ void ProcessReader::readBinaryValues()
 
 			ReadProcessMemory(hProcess, (BYTE*)recordBoxBites[i].addr, new_data.data(), new_data.size(), nullptr);
 
-			recordBoxBites[i].data = new_data;
-
+			if (!std::equal(recordBoxBites[i].data.begin(), recordBoxBites[i].data.end(), new_data.begin()))
+			{
+				recordBoxBites[i].shouldSend = true;
+				recordBoxBites[i].data = new_data;
+			}
 
 			recordBoxBites[i].locked = false;
 		}

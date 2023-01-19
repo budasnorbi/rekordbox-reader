@@ -24,7 +24,7 @@ public:
 		this->opCode = _opCode;
 
 		this->locked = false;
-		this->shouldSend = false;
+		this->shouldSend = true;
 
 		data = std::vector<unsigned char>(this->size);
 	}
