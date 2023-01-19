@@ -17,7 +17,11 @@ void ProcessReader::sendOnUdpSocket()
 
 	for (size_t i = 0; i < this->recordBoxDoubles.size(); i++)
 	{
-		if (!recordBoxDoubles[i].locked) {
+		if (!recordBoxDoubles[i].locked && recordBoxDoubles[i].shouldSend) {
+
+
+			recordBoxDoubles[i].shouldSend = false;
+
 			std::vector<unsigned char> sendData = this->recordBoxDoubles[i].data;
 			sendData.insert(sendData.begin(), this->recordBoxDoubles[i].opCode);
 
@@ -166,7 +170,13 @@ void ProcessReader::readDoubleValues()
 
 			ReadProcessMemory(hProcess, (BYTE*)recordBoxDoubles[i].addr, new_data.data(), new_data.size(), nullptr);
 
-			recordBoxDoubles[i].data = new_data;
+			if(!std::equal(recordBoxDoubles[i].data.begin(), recordBoxDoubles[i].data.end(),new_data.begin()))
+			{
+				recordBoxDoubles[i].shouldSend = true;
+				recordBoxDoubles[i].data = new_data;
+			}
+
+			
 
 			recordBoxDoubles[i].locked = false;
 		}

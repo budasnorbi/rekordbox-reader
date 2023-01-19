@@ -13,6 +13,7 @@ public:
 	std::vector<unsigned char> data;
 	std::string description;
 	bool locked;
+	bool shouldSend;
 	
 
 	RekordBoxData(std::string _description, int _opCode, uintptr_t _addr)
@@ -21,6 +22,9 @@ public:
 		this->size = sizeof(T);
 		this->addr = _addr;
 		this->opCode = _opCode;
+
+		this->locked = false;
+		this->shouldSend = false;
 
 		data = std::vector<unsigned char>(this->size);
 	}
