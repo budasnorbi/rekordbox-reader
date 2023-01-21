@@ -19,6 +19,7 @@ export enum OPCODES {
   D2_SONG_ID = 17,
   D2_IS_PLAYING = 18,
   D2_CURRENT_TIME = 19,
+  CROSSFADER = 20
 }
 
 export type TCP_OPCODES =

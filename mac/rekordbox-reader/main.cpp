@@ -15,17 +15,17 @@
 #define UDP_SERVER_PORT 54000
 #define HOST "127.0.0.1"
 
-class Packet{
+class Packet {
 public:
     unsigned int size;
-    char opcode;
+    unsigned char opcode;
     uintptr_t addr;
-    std::vector<std::byte> data;
-    
-    Packet(char _opcode, unsigned int _size, uintptr_t _addr){
+    std::vector<unsigned char> data;
+
+    Packet(unsigned char _opcode, unsigned int _size, uintptr_t _addr) {
         opcode = _opcode;
         addr = _addr;
-        data = std::vector<std::byte>(_size);
+        data = std::vector<unsigned char>(_size);
         size = _size;
     }
 };
@@ -44,15 +44,15 @@ uintptr_t FindDMAAddy(Process process, uintptr_t ptr, std::vector<unsigned int> 
 
 int main()
 {
-    std::cout << "REKORDBOX READER v0.1 (for macOS)" << std::endl;
+    std::cout << "REKORDBOX READER v0.2 (for macOS)" << std::endl;
     std::cout << "Supported rekordbox version: 6.6.8" << std::endl;
     
-    int sockfd;
+    int udpSock;
     struct sockaddr_in cli_addr;
     //socklen_t addr_size;
     
-    sockfd = socket(AF_INET, SOCK_DGRAM, 0);
-    if (sockfd < 0) {
+    udpSock = socket(AF_INET, SOCK_DGRAM, 0);
+    if (udpSock < 0) {
         std::cout << "ERROR: creating an endpoint for communication" << std::endl;
     }
     
@@ -69,39 +69,73 @@ int main()
     uint64_t base = process->get_base_address();
     
     std::vector packets = {
-        // D1 CHANNEL FADER
-        Packet(0, sizeof(double), FindDMAAddy(*process, base + 0x03F8DDA0, {0x190, 0x10, 0x20, 0x18, 0x40, 0x28, 0x248})),
-        // D1 LOW FILTER KNOB
-        Packet(1, sizeof(double), FindDMAAddy(*process, base + 0x03F8DDA0, {0x150,0x10,0x68,0x38,0x40,0x10,0x778})),
-        // D1 MID FILTER KNOB
-        Packet(2, sizeof(double), FindDMAAddy(*process, base + 0x03FA0CF0, {0xD0, 0x40, 0x10, 0x168, 0x0, 0x10, 0x770})),
-        // D1 HIGH FILTER KNOB
-        Packet(3, sizeof(double), FindDMAAddy(*process, base + 0x03FA0CF0, {0xE0, 0x18, 0x40, 0x18, 0x40, 0x18, 0x4F8})),
-        // D1 CURRENT TIME
-        Packet(4, sizeof(double), FindDMAAddy(*process, base + 0x03F9FA58, {0x18, 0x188, 0x140, 0x8, 0x158, 0x140, 0x128})),
-        // D1 IS PLAYING
-        Packet(5, sizeof(std::byte), FindDMAAddy(*process, base + 0x03F92DC8, {0x60, 0x688, 0x248, 0x150, 0x58, 0xD44})),
-        // D2 CHANNEL FADER
-        Packet(6, sizeof(double), FindDMAAddy(*process, base + 0x03FA0CF0, {0x838, 0x18, 0x40, 0x0, 0x40, 0x40, 0x248}))
+          // D1 CHANNEL FADER
+          Packet(0, sizeof(double), FindDMAAddy(*process, base + 0x03F8DDA0, {0x190, 0x10, 0x20, 0x18, 0x40, 0x28, 0x248})),
+          // D1 CFX KNOB
+          Packet(1, sizeof(double), FindDMAAddy(*process, base + 0x03F92DC8, {0x28, 0x50, 0x130, 0x100, 0x40, 0xA0, 0xDC0})),
+          // D1 LOW FILTER KNOB
+          Packet(2, sizeof(double), FindDMAAddy(*process, base + 0x03EE2840, {})),
+          // D1 MID FILTER KNOB
+          Packet(3, sizeof(double), FindDMAAddy(*process, base + 0x03EE2838, {})),
+          // D1 HIGH FILTER KNOB
+          Packet(4, sizeof(double), FindDMAAddy(*process, base + 0x03EE2830, {})),
+          // D1 TRIM KNOB
+          Packet(5, sizeof(double), FindDMAAddy(*process, base + 0x03F8D6B8, {})),
+          // D1 TEMPO
+          Packet(6, sizeof(double), FindDMAAddy(*process, base + 0x03F92DC8, {0x60, 0x630, 0x258, 0x730, 0x40, 0x40, 0x320})),
+          // D1 SONG ID
+          Packet(7, 4, FindDMAAddy(*process, base + 0x03F928B0, {0x8, 0x40, 0x8})),
+          // D1 IS PLAYING
+          Packet(8, sizeof(unsigned char), FindDMAAddy(*process, base + 0x03F92DC8, {0x60, 0x688, 0x248, 0x150, 0x58, 0xD44})),
+          // D1 CURRENT TIME
+          Packet(9, sizeof(double), FindDMAAddy(*process, base + 0x03F9FA58, {0x18, 0x188, 0x140, 0x8, 0x158, 0x140, 0x128})),
+        
+          // D2 CHANNEL FADER
+          Packet(10, sizeof(double), FindDMAAddy(*process, base + 0x03FA0CF0, {0x838, 0x18, 0x40, 0x0, 0x40, 0x40, 0x248})),
+          // D2 CFX KNOB
+          Packet(11, sizeof(double), FindDMAAddy(*process, base + 0x03F92DC8, {0x28, 0xC0, 0x18, 0x108, 0x8, 0xE8, 0xB0})),
+          // D2 LOW FILTER KNOB
+          Packet(12, sizeof(double), FindDMAAddy(*process, base + 0x3EE2860, {})),
+          // D2 MID FILTER KNOB
+          Packet(13, sizeof(double), FindDMAAddy(*process, base + 0x3EE2858, {})),
+          // D2 HIGH FILTER KNOB
+          Packet(14, sizeof(double), FindDMAAddy(*process, base + 0x3EE2850, {})),
+          // D2 TRIM KNOB
+          Packet(15, sizeof(double), FindDMAAddy(*process, base + 0x03F8D6C0, {})),
+          // D2 TEMPO
+          Packet(16, sizeof(double), FindDMAAddy(*process, base + 0x03F92DC8, {0x60, 0x688, 0x290, 0x70, 0x40, 0x78, 0x990 })),
+          // D2 SONG ID
+          Packet(17, 4, FindDMAAddy(*process, base + 0x03FA0CF0, {0x788, 0x18, 0x168, 0x118, 0x58, 0x28, 0x850})),
+          // D2 IS PLAYING
+          Packet(18, sizeof(unsigned char), FindDMAAddy(*process, base + 0x03F9FA28, {0x0, 0x18, 0x48, 0x178, 0xE0, 0x210, 0x7B8})),
+          // D2 CURRENT TIME
+          Packet(19, sizeof(double), FindDMAAddy(*process, base + 0x03F9FA28, {0x0, 0x30, 0x8, 0x100, 0x8, 0xE0, 0x988})),
+        
+          // CROSS FADER
+          Packet(20, sizeof(double), FindDMAAddy(*process, base + 0x03F92DC8, {0x28, 0x10, 0x208, 0x48, 0x8, 0x18, 0xE00}))
     };
     
+    ssize_t sendResult = NULL;
+    Packet* packet;
+    std::vector<unsigned char> new_data;
+    
     while(true){
-        ssize_t sendResult = NULL;
         for(unsigned int i = 0; i < packets.size(); i++){
-            Packet &packet = packets[i];
+            packet = &packets[i];
+            new_data.resize(packet->size);
             
-            std::vector<std::byte> data(packet.size);
-            process->Read(packet.addr, data.data(), data.size());
-            if(packet.data != data){
-                packet.data = data;
+            process->Read(packet->addr, new_data.data(), new_data.size());
+            if(std::equal(packet->data.begin(), packet->data.end(), new_data.begin()) == FALSE){
+                packet->data = new_data;
+                new_data.insert(new_data.begin(), packet->opcode);
                 
-                data.insert(data.begin(), (std::byte)packet.opcode);
-                sendResult = sendto(sockfd, data.data(), data.size(), 0, (sockaddr*)&cli_addr, sizeof(cli_addr));
+                // UDP PACKETS
+                sendResult = sendto(udpSock, (char*)new_data.data(), new_data.size(), 0, (sockaddr*)&cli_addr, sizeof(cli_addr));
             }
         }
         
         if(sendResult < 0){
-            close(sockfd);
+            close(udpSock);
             return 0;
         }
     };

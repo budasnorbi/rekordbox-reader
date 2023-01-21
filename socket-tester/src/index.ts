@@ -41,9 +41,14 @@ udpServer.on("message", function (buffer) {
     }else if(opCode === OPCODES.D1_CURRENT_TIME || opCode === OPCODES.D2_CURRENT_TIME){
         // D1 D2 CURRENT TIME 
         value = buffer.readDoubleLE(1)
+    } else if(opCode === OPCODES.CROSSFADER){
+        value = buffer.readDoubleLE(1)
+    } else {
+        console.warn("Can't process opcode")
+        console.log(buffer)
     }
 
-    console.log("[UDP]",opCode, value);
+    console.log("[UDP]",opCode, value)
     
 });
 
