@@ -13,6 +13,7 @@
 #include <sstream>
 
 #define UDP_SERVER_PORT 54000
+#define TCP_SERVER_PORT 54001
 #define HOST "127.0.0.1"
 
 class Packet {
@@ -46,25 +47,38 @@ int main()
 {
     std::cout << "REKORDBOX READER v0.2 (for macOS)" << std::endl;
     std::cout << "Supported rekordbox version: 6.6.8" << std::endl;
-    
-    int udpSock;
+
+    // UDP CLIENT
     struct sockaddr_in cli_addr;
-    //socklen_t addr_size;
-    
-    udpSock = socket(AF_INET, SOCK_DGRAM, 0);
+    int udpSock = socket(AF_INET, SOCK_DGRAM, 0);
     if (udpSock < 0) {
-        std::cout << "ERROR: creating an endpoint for communication" << std::endl;
+        std::cout << "ERROR: creating an udp client for communication" << std::endl;
+        exit(1);
     }
-    
+
     memset(&cli_addr, 0, sizeof(cli_addr));
     cli_addr.sin_family = AF_INET;
     cli_addr.sin_port = htons(UDP_SERVER_PORT);
     cli_addr.sin_addr.s_addr = htonl(INADDR_ANY);
     
+    // TCP CLIENT
+    struct sockaddr_in serverAddr;
+    int tcpSock = socket(AF_INET, SOCK_STREAM, 0);
+    if (tcpSock < 0) {
+        std::cout << "ERROR: creating a tcp client for communication" << std::endl;
+        exit(1);
+    }
+    
+    serverAddr.sin_family = AF_INET;
+    serverAddr.sin_port = htons(TCP_SERVER_PORT);
+    
+    if(connect(tcpSock, (struct sockaddr*)&serverAddr, sizeof(serverAddr)) == 0){
+        std::cout << "Connecting to server..." << std::endl;
+    }
+    
     // INIT PROCESS READER
     Process *process = new Process();
     process->Open((char*)"rekordbox");
-    //pid_t pid = process->get_pid();
     
     uint64_t base = process->get_base_address();
     
@@ -129,8 +143,12 @@ int main()
                 packet->data = new_data;
                 new_data.insert(new_data.begin(), packet->opcode);
                 
-                // UDP PACKETS
-                sendResult = sendto(udpSock, (char*)new_data.data(), new_data.size(), 0, (sockaddr*)&cli_addr, sizeof(cli_addr));
+                if(packet->opcode == 7 || packet->opcode == 17 || packet->opcode == 8|| packet->opcode == 18){
+                    sendResult = sendto(tcpSock, (char*)new_data.data(), new_data.size(), 0, (sockaddr*)&serverAddr, sizeof(serverAddr));
+                } else {
+                    sendResult = sendto(udpSock, (char*)new_data.data(), new_data.size(), 0, (sockaddr*)&cli_addr, sizeof(cli_addr));
+                }
+               
             }
         }
         
