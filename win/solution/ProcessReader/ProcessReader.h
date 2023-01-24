@@ -44,7 +44,7 @@ public:
 			RekordBoxData<double>("D1 Mid Filter Knob", 3,  FindDMAAddy(this->baseAddress + 0x03EA7BA0,  {})),
 			RekordBoxData<double>("D1 High Filter Knob", 4,  FindDMAAddy(this->baseAddress + 0x03EA7B98,  {})),
 			RekordBoxData<double>("D1 Trim Knob", 5,  FindDMAAddy(this->baseAddress + 0x03F95098,  {})),
-			RekordBoxData<double>("D1 Tempo", 6,  FindDMAAddy(this->baseAddress + 0x03FBF5E0, { 0x160, 0x40, 0x78, 0xE0, 0xB0})),
+			RekordBoxData<double>("D1 Tempo Slider", 6,  FindDMAAddy(this->baseAddress + 0x03FBF5E0, { 0x160, 0x40, 0x78, 0xE0, 0xB0})),
 			RekordBoxData<double>("D1 Current Time", 9,  FindDMAAddy(this->baseAddress + 0x03FCA690, { 0x138, 0x38, 0x68, 0x3E0, 0xF8, 0x0, 0x138 })),
 
 			RekordBoxData<double>("D2 Channel Fader", 10,  FindDMAAddy(this->baseAddress + 0x03F950B0, {})),
@@ -53,10 +53,17 @@ public:
 			RekordBoxData<double>("D2 Mid Filter Knob", 13,  FindDMAAddy(this->baseAddress + 0x03EA7BB8,  {})),
 			RekordBoxData<double>("D2 High Filter Knob", 14,  FindDMAAddy(this->baseAddress + 0x03EA7BB0,  {})),
 			RekordBoxData<double>("D2 Trim Knob", 15,  FindDMAAddy(this->baseAddress + 0x03F950A0,  {})),
-			RekordBoxData<double>("D2 Tempo", 16,  FindDMAAddy(this->baseAddress + 0x03F626C8, { 0x70, 0x10, 0x18, 0x40, 0x78, 0xE0, 0xB0 })),
+			RekordBoxData<double>("D2 Tempo Slider", 16,  FindDMAAddy(this->baseAddress + 0x03F626C8, { 0x70, 0x10, 0x18, 0x40, 0x78, 0xE0, 0xB0 })),
 			RekordBoxData<double>("D2 Current Time", 19,  FindDMAAddy(this->baseAddress + 0x03FACDB8, { 0xF0, 0x3E0, 0xF8, 0x8, 0xA0, 0x108, 0x138, })),
 
 			RekordBoxData<double>("Crossfader", 20,  FindDMAAddy(this->baseAddress + 0x03F626C8, { 0x60, 0x670, 0x38, 0x38, 0x0, 0x120, 0x2C8, })),
+
+			// Calculated values
+			RekordBoxData<double>("D1 Calculated Tempo", 30,  FindDMAAddy(this->baseAddress + 0x03FBF5E0, { 0x10, 0x40, 0x0, 0x58, 0x278, 0xB0 })),
+			RekordBoxData<double>("D1 Calculated First Beat Time", 31,  FindDMAAddy(this->baseAddress + 0x03F626C8, { 0x28, 0x10, 0x68, 0x3E0, 0xF8, 0x0, 0x140 })),
+
+			RekordBoxData<double>("D2 Calculated Tempo", 40,  FindDMAAddy(this->baseAddress + 0x03FBF5E0, { 0x18, 0x40, 0x0, 0x58, 0x278, 0xB0 })),
+			RekordBoxData<double>("D2 Calculated First Beat Time", 41,  FindDMAAddy(this->baseAddress + 0x03F626C8, { 0x28, 0x10, 0x68, 0x3E0, 0xF8, 0x8, 0x140 })),
 		};
 
 
