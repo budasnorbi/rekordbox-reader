@@ -1,55 +1,65 @@
-#define NAPI_DISABLE_CPP_EXCEPTIONS
-#include <napi.h>
 #include <uv.h>
-#include <chrono>
+#include <node.h>
+#include <node_buffer.h>
+#include <chrono> // For std::this_thread::sleep_for
 #include <thread>
 
-using namespace Napi;
+using namespace v8;
 
-void RunForever(const CallbackInfo &info)
+struct Work
 {
-    Napi::Env env = info.Env();
+    uv_work_t request;
+    Persistent<Function> callback;
+};
 
-    // Create a new ThreadSafeFunction to the JavaScript callback
-    Napi::ThreadSafeFunction tsfn = Napi::ThreadSafeFunction::New(
-        env,
-        info[0].As<Function>(),
-        "RunForever",
-        0,
-        1);
-
-    // Create a new uv_thread_t object to start the worker thread
-    auto worker = new uv_thread_t;
-
-    // Start the worker thread and pass the ThreadSafeFunction to it
-    uv_thread_create(
-        worker, [](void *arg)
-        {
-    auto tsfn = static_cast<Napi::ThreadSafeFunction*>(arg);
-
-    // Create a while loop that runs forever
-    while (true) {
-      // Call the JavaScript callback in a thread-safe way
-      tsfn->NonBlockingCall(
-          [tsfn](Napi::Env env, Napi::Function jsCallback) {
-            // Call the JavaScript callback with the Buffer
-            jsCallback.Call({Napi::Buffer<char>::New(env, "Hello world!", 12)});
-          });
-
-      std::this_thread::sleep_for(std::chrono::milliseconds(200));
-    } },
-        &tsfn);
-
-    // Detach the worker thread to allow it to continue running after the main thread exits
-    // #ifdef _WIN32
-    //     uv_thread_join(worker);
-    // #endif
+void WorkAsync(uv_work_t *req)
+{
 }
 
-Object Init(Env env, Object exports)
+void WorkAsyncComplete(uv_work_t *req, int status)
 {
-    exports.Set("runForever", Function::New(env, RunForever));
-    return exports;
+    Isolate *isolate = Isolate::GetCurrent();
+    HandleScope scope(isolate);
+    Work *work = static_cast<Work *>(req->data);
+
+    // The callback function is invoked in the main thread.
+    Local<Function> callback = Local<Function>::New(isolate, work->callback);
+    // Pass the buffer object to the callback function.
+    size_t buffer_length = 4;
+    char *buffer_data = "test";
+    Local<Value> argv[1] = {node::Buffer::New(isolate, buffer_data, buffer_length).ToLocalChecked()};
+
+    while (true)
+    {
+        callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
+        std::this_thread::sleep_for(std::chrono::seconds(1));
+    }
+
+    // Clean up the persistent reference to the callback function.
+    work->callback.Reset();
+    delete work;
 }
 
-NODE_API_MODULE(addon, Init)
+void StartLoop(const FunctionCallbackInfo<Value> &args)
+{
+    Isolate *isolate = args.GetIsolate();
+
+    // Parse the arguments: callback function and loop condition.
+    Local<Function> callback = Local<Function>::Cast(args[0]);
+    bool condition = args[1]->BooleanValue(isolate);
+
+    // Create a Work object to pass to the worker thread.
+    Work *work = new Work();
+    work->request.data = work;
+    work->callback.Reset(isolate, callback);
+
+    // Start the worker thread and pass it the Work object.
+    uv_queue_work(uv_default_loop(), &work->request, WorkAsync, WorkAsyncComplete);
+}
+
+void Init(Local<Object> exports, Local<Object> module)
+{
+    NODE_SET_METHOD(module, "exports", StartLoop);
+}
+
+NODE_MODULE(addon, Init)

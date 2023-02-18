@@ -2,3 +2,4 @@
 socket-tester/build
 .DS_STORE
 mac/rekordbox-reader.xcodeproj/project.xcworkspace/xcuserdata
+node-addon/build
