@@ -1,0 +1,16 @@
+{
+  "name": "cb-addon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "addon.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "gypfile": true,
+  "dependencies": {
+    "node-addon-api": "^5.1.0",
+    "node-gyp": "^9.3.1"
+  }
+}
