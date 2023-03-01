@@ -23,7 +23,17 @@
           "OTHER_CPLUSPLUSFLAGS": [
             "-fno-exceptions"
           ]
-        }
+        },
+      "conditions": [        
+        ["OS==\"win\"", {
+          "copies": [
+            {
+              "destination": "<(module_root_dir)/build/Release/",
+              "files": [ "<(module_root_dir)/reader.dll" ]
+            }
+          ]
+        }]
+      ],
       }
   ]
 }
