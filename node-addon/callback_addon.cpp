@@ -1,7 +1,7 @@
 #include <uv.h>
 #include <node.h>
 #include <node_buffer.h>
-#include <chrono> // For std::this_thread::sleep_for
+#include <chrono>
 #include <thread>
 
 using namespace v8;
@@ -18,6 +18,8 @@ struct MyStruct
     uint32_t d1SongId;
     bool d1IsPlaying;
     double d1CurrentTime;
+    double d1CalculatedTempo;
+    double d1CalculatedFristBeat;
 
     double d2ChannelFader;
     double d2CfxKnob;
@@ -29,6 +31,10 @@ struct MyStruct
     uint32_t d2SongId;
     bool d2IsPlaying;
     double d2CurrentTime;
+    double d2CalculatedTempo;
+    double d2CalculatedFristBeat;
+
+    double crossfader;
 };
 
 typedef MyStruct *(*DLLFunction1)();
@@ -146,6 +152,20 @@ void WorkAsyncComplete(uv_work_t *req, int status)
             updatedValues++;
         }
 
+        if (mystruct->d1CalculatedTempo != _mystruct->d1CalculatedTempo)
+        {
+            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedTempo").ToLocalChecked(), Number::New(isolate, mystruct->d1CalculatedTempo));
+            _mystruct->d1CalculatedTempo = mystruct->d1CalculatedTempo;
+            updatedValues++;
+        }
+
+        if (mystruct->d1CalculatedFristBeat != _mystruct->d1CalculatedFristBeat)
+        {
+            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedFristBeat").ToLocalChecked(), Number::New(isolate, mystruct->d1CalculatedFristBeat));
+            _mystruct->d1CalculatedFristBeat = mystruct->d1CalculatedFristBeat;
+            updatedValues++;
+        }
+
         if (mystruct->d2ChannelFader != _mystruct->d2ChannelFader)
         {
             obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2ChannelFader").ToLocalChecked(), Number::New(isolate, mystruct->d2ChannelFader));
@@ -213,6 +233,27 @@ void WorkAsyncComplete(uv_work_t *req, int status)
         {
             obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CurrentTime").ToLocalChecked(), Number::New(isolate, mystruct->d2CurrentTime));
             _mystruct->d2CurrentTime = mystruct->d2CurrentTime;
+            updatedValues++;
+        }
+
+        if (mystruct->d2CalculatedTempo != _mystruct->d2CalculatedTempo)
+        {
+            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedTempo").ToLocalChecked(), Number::New(isolate, mystruct->d2CalculatedTempo));
+            _mystruct->d2CalculatedTempo = mystruct->d2CalculatedTempo;
+            updatedValues++;
+        }
+
+        if (mystruct->d2CalculatedFristBeat != _mystruct->d2CalculatedFristBeat)
+        {
+            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedFristBeat").ToLocalChecked(), Number::New(isolate, mystruct->d2CalculatedFristBeat));
+            _mystruct->d2CalculatedFristBeat = mystruct->d2CalculatedFristBeat;
+            updatedValues++;
+        }
+
+        if (mystruct->crossfader != _mystruct->crossfader)
+        {
+            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "crossfader").ToLocalChecked(), Number::New(isolate, mystruct->crossfader));
+            _mystruct->crossfader = mystruct->crossfader;
             updatedValues++;
         }
 
