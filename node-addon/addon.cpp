@@ -299,7 +299,7 @@ void WorkAsyncComplete(uv_work_t *req, int status)
     delete work;
 }
 
-void StartLoop(const FunctionCallbackInfo<Value> &args)
+void trackChanges(const FunctionCallbackInfo<Value> &args)
 {
     Isolate *isolate = args.GetIsolate();
 
@@ -318,7 +318,7 @@ void StartLoop(const FunctionCallbackInfo<Value> &args)
 
 void Init(Local<Object> exports, Local<Object> module)
 {
-    NODE_SET_METHOD(module, "exports", StartLoop);
+    NODE_SET_METHOD(module, "exports", trackChanges);
 }
 
 NODE_MODULE(addon, Init)

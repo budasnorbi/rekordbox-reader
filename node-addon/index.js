@@ -1,3 +1,1 @@
-const trackChanges = require("./build/Release/addon");
-
-module.exports = trackChanges;
+module.exports = { trackChanges: require("./build/Release/addon") };
