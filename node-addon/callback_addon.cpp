@@ -51,26 +51,26 @@ void WorkAsyncComplete(uv_work_t *req, int status)
 
     Local<Function> callback = Local<Function>::New(isolate, work->callback);
 
-    HMODULE dllHandle = LoadLibrary("./reader.dll");
-    if (dllHandle == NULL)
-    {
-        // Handle error
-        printf("%s", "dll error");
-        return;
-    }
-    DLLFunction1 getData = (DLLFunction1)GetProcAddress(dllHandle, "getData");
-
-    if (getData == NULL)
-    {
-        // Handle error
-        printf("%s", "getData error");
-        FreeLibrary(dllHandle);
-    }
-
     MyStruct *_mystruct = new MyStruct();
     int updatedValues = 0;
     while (true)
     {
+        HMODULE dllHandle = LoadLibrary("./reader.dll");
+        if (dllHandle == NULL)
+        {
+            // Handle error
+            printf("%s", "dll error");
+            return;
+        }
+        DLLFunction1 getData = (DLLFunction1)GetProcAddress(dllHandle, "getData");
+
+        if (getData == NULL)
+        {
+            // Handle error
+            printf("%s", "getData error");
+            FreeLibrary(dllHandle);
+        }
+
         MyStruct *mystruct = getData();
 
         Local<Object> obj = Object::New(isolate);
@@ -219,12 +219,11 @@ void WorkAsyncComplete(uv_work_t *req, int status)
         {
             Local<Value> argv[1] = {obj};
             callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
             updatedValues = 0;
         }
+        FreeLibrary(dllHandle);
     }
 
-    FreeLibrary(dllHandle);
     work->callback.Reset();
     delete work;
 }
