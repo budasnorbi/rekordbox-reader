@@ -1,3 +1,3 @@
-const trackChanges = require("./build/Release/callback_addon");
+const trackChanges = require("./build/Release/addon");
 
 module.exports = trackChanges;
