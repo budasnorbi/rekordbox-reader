@@ -1,4 +1,6 @@
 /**/node_modules/
-socket-tester/build
 .DS_STORE
-mac/rekordbox-reader.xcodeproj/project.xcworkspace/xcuserdata
+node-addon/build
+reader-dll/x64
+reader-dll/reader/x64
+reader-dll/.vs
