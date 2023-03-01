@@ -3,6 +3,8 @@
 #include <node_buffer.h>
 #include <chrono>
 #include <thread>
+#include <iostream>
+#include <filesystem>
 
 using namespace v8;
 
@@ -49,6 +51,15 @@ void WorkAsync(uv_work_t *req)
 {
 }
 
+std::string GetCurrentDirectory()
+{
+    char buffer[MAX_PATH];
+    GetModuleFileNameA(NULL, buffer, MAX_PATH);
+    std::string::size_type pos = std::string(buffer).find_last_of("\\/");
+
+    return std::string(buffer).substr(0, pos);
+}
+
 void WorkAsyncComplete(uv_work_t *req, int status)
 {
     Isolate *isolate = Isolate::GetCurrent();
@@ -62,9 +73,18 @@ void WorkAsyncComplete(uv_work_t *req, int status)
 
     Local<Object> obj = Object::New(isolate);
 
+    std::string filePath = "node_modules/rekordbox-reader/reader.dll";
+    std::filesystem::path absolutePath = std::filesystem::absolute(filePath);
+
+    std::wstring wstrAbsolutePath = absolutePath.wstring();
+
+    int requiredSize = WideCharToMultiByte(CP_UTF8, 0, wstrAbsolutePath.c_str(), -1, nullptr, 0, nullptr, nullptr);
+    std::string strAbsolutePath(requiredSize, 0);
+    WideCharToMultiByte(CP_UTF8, 0, wstrAbsolutePath.c_str(), -1, strAbsolutePath.data(), requiredSize, nullptr, nullptr);
+
     while (true)
     {
-        HMODULE dllHandle = LoadLibrary("./reader.dll");
+        HMODULE dllHandle = LoadLibrary(strAbsolutePath.c_str());
         if (dllHandle == NULL)
         {
             // Handle error
