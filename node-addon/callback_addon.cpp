@@ -53,6 +53,9 @@ void WorkAsyncComplete(uv_work_t *req, int status)
 
     MyStruct *_mystruct = new MyStruct();
     int updatedValues = 0;
+
+    Local<Object> obj = Object::New(isolate);
+
     while (true)
     {
         HMODULE dllHandle = LoadLibrary("./reader.dll");
@@ -72,8 +75,6 @@ void WorkAsyncComplete(uv_work_t *req, int status)
         }
 
         MyStruct *mystruct = getData();
-
-        Local<Object> obj = Object::New(isolate);
 
         if (mystruct->d1ChannelFader != _mystruct->d1ChannelFader)
         {
@@ -218,13 +219,22 @@ void WorkAsyncComplete(uv_work_t *req, int status)
         if (updatedValues != 0)
         {
             Local<Value> argv[1] = {obj};
-            callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
             updatedValues = 0;
+            callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
+
+            Local<Array> propertyNames = obj->GetPropertyNames(isolate->GetCurrentContext()).ToLocalChecked();
+            for (uint32_t i = 0; i < propertyNames->Length(); i++)
+            {
+                Local<Value> key = propertyNames->Get(isolate->GetCurrentContext(), i).ToLocalChecked();
+                obj->Delete(isolate->GetCurrentContext(), key);
+            }
         }
+
+        work->callback.Reset();
         FreeLibrary(dllHandle);
+        delete mystruct;
     }
 
-    work->callback.Reset();
     delete work;
 }
 
