@@ -1,12 +1,62 @@
 # Rekordbox reader for Windows, macOS
+
 **Reads rekordbox decks values from memory**
+The project goal is to solve those ones problems, who bought a beginner pionner's dj controller like the DDJ-FLX4 and still want to get the time codes of the current played song like on the expensive ones or track more actions like changing the crossfader or the deck knobs
+This repository contains a dll project and a node package project.
 
-This repository contains a macOS and a Windows c++ project to read rekordbox internals.
-The project goal is to solve those ones problems, who bought a beginner pionner's dj controller like the and still want to get the time codes of the current played song like on the expensive ones.
+## Installation
 
-I only have DDJ-FLX4 so the project only tested them mentioned device and rekordbox version (6.6.8).
+> To use this package you should install yalc(https://github.com/wclr/yalc) to be able to use this node addon in other projects.
+> The package is only contains one function which is called trackChanges.
 
-I also included a Node.js project, so you can check which controller events has been implemented so far.
-See the projects description in their respective folder.
+```
+yalc publish // use this command in the node-addon folder to publish the package locally on your system
+yalc add rekordbox-reader // use this command in your target project directory
+```
 
-If you need more features, feel free to create a new issue about it.
+## Usage
+
+> It has a typescript support so you can see what properties is avaible in the changes object.
+> The callback function will be triggered if any of the properties in the changes object are changed.
+
+```js
+const { trackChanges } = require("rekordbox-reader");
+
+trackChanges((changes) => {
+  console.log(changes);
+});
+```
+
+First when you run subscribing to this you will get all the results like this:
+
+```js
+{
+  d1ChannelFader: 0.8250015259720442,
+  d1CfxKnob: 0.500030517578125,
+  d1LowFilter: 0.5000305194408838,
+  d1MidFilter: 0.5000305194408838,
+  d1HighFilter: 0.5000305194408838,
+  d1TrimKnob: 0.4717084783006775,
+  d1SongId: 2645840387,
+  d1CurrentTime: 0.04598639455782313,
+  d1CalculatedTempo: 124,
+  d1CalculatedFristBeat: 0.046,
+  d2ChannelFader: 1,
+  d2CfxKnob: 0.500030517578125,
+  d2LowFilter: 0.5000305194408838,
+  d2MidFilter: 0.5000305194408838,
+  d2HighFilter: 0.5000305194408838,
+  d2TrimKnob: 0.5005188304950253,
+  d2SongId: 2796361984,
+  d2CurrentTime: 0.6586621315192743,
+  d2CalculatedTempo: 128,
+  d2CalculatedFristBeat: 0.12,
+  crossfader: 0.7423548800585973
+}
+```
+
+But after that only those properties will be in the changes object that are changed
+
+```js
+{ d1IsPlaying: true, d1CurrentTime: 0.056643990929705214 }
+```
