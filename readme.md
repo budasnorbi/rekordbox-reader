@@ -1,8 +1,14 @@
-# Rekordbox reader for Windows, macOS
+# Rekordbox reader for Windows
 
 **Reads rekordbox decks values from memory**
-The project goal is to solve those ones problems, who bought a beginner pionner's dj controller like the DDJ-FLX4 and still want to get the time codes of the current played song like on the expensive ones or track more actions like changing the crossfader or the deck knobs
+The project goal is to solve those ones problems, who bought a beginner pionner's dj controller like the DDJ-FLX4 and still want to get the time codes of the current played song like on the expensive ones or track more actions like changing the crossfader or the deck knobs.
 This repository contains a dll project and a node package project.
+
+#### It currently support rekordbox 6.6.8
+
+## How it works
+
+In the dll file there is a memory reading function that read the rekordbox process based on the fetched cheat engine offsets.
 
 ## Installation
 
@@ -16,8 +22,7 @@ yalc add rekordbox-reader // use this command in your target project directory
 
 ## Usage
 
-> It has a typescript support so you can see what properties is avaible in the changes object.
-> The callback function will be triggered if any of the properties in the changes object are changed.
+> It has built in typescript support, so you can see what properties is avaible in the changes object.
 
 ```js
 const { trackChanges } = require("rekordbox-reader");
@@ -27,7 +32,7 @@ trackChanges((changes) => {
 });
 ```
 
-First when you run subscribing to this you will get all the results like this:
+The first time when the callback is fired it gives back all the changed properties:
 
 ```js
 {
@@ -55,7 +60,7 @@ First when you run subscribing to this you will get all the results like this:
 }
 ```
 
-But after that only those properties will be in the changes object that are changed
+But after that, only those properties will be in the changes object that are changed.
 
 ```js
 { d1IsPlaying: true, d1CurrentTime: 0.056643990929705214 }
