@@ -1,6 +1,6 @@
 {
   "name": "rekordbox-reader",
-  "version": "1.1.2",
+  "version": "1.2.0",
   "description": "reads rekordbox process and extends its internals",
   "main": "index.js",
   "scripts": {
