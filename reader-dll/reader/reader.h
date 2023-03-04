@@ -16,7 +16,7 @@ struct Changes {
 	double d1TrimKnob = 0.0;
 	double d1Tempo = 0.0;
 	uint32_t d1SongId = 0;
-	bool d1IsPlaying = 0;
+	int d1IsPlaying = -1;
 	double d1CurrentTime = 0.0;
 	double d1CalculatedTempo = 0.0;
 	double d1CalculatedFristBeat = 0.0;
@@ -29,7 +29,7 @@ struct Changes {
 	double d2TrimKnob = 0.0;
 	double d2Tempo = 0.0;
 	uint32_t d2SongId = 0;
-	bool d2IsPlaying = 0;
+	int d2IsPlaying = -1;
 	double d2CurrentTime = 0.0;
 	double d2CalculatedTempo = 0.0;
 	double d2CalculatedFristBeat = 0.0;

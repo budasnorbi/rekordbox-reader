@@ -18,7 +18,7 @@ struct MyStruct
     double d1TrimKnob;
     double d1Tempo;
     uint32_t d1SongId;
-    bool d1IsPlaying;
+    int d1IsPlaying = -1;
     double d1CurrentTime;
     double d1CalculatedTempo;
     double d1CalculatedFristBeat;
@@ -31,7 +31,7 @@ struct MyStruct
     double d2TrimKnob;
     double d2Tempo;
     uint32_t d2SongId;
-    bool d2IsPlaying;
+    int d2IsPlaying = -1;
     double d2CurrentTime;
     double d2CalculatedTempo;
     double d2CalculatedFristBeat;
@@ -117,9 +117,9 @@ void AsyncCb(uv_async_t *handle)
         updatedValues++;
     }
 
-    if (work->data->d1IsPlaying)
+    if (work->data->d1IsPlaying != -1)
     {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1IsPlaying").ToLocalChecked(), Boolean::New(isolate, work->data->d1IsPlaying));
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1IsPlaying").ToLocalChecked(), Boolean::New(isolate, (bool)work->data->d1IsPlaying));
         updatedValues++;
     }
 
@@ -189,9 +189,9 @@ void AsyncCb(uv_async_t *handle)
         updatedValues++;
     }
 
-    if (work->data->d2IsPlaying)
+    if (work->data->d2IsPlaying != -1)
     {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2IsPlaying").ToLocalChecked(), Boolean::New(isolate, work->data->d2IsPlaying));
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2IsPlaying").ToLocalChecked(), Boolean::New(isolate, (bool)work->data->d2IsPlaying));
         updatedValues++;
     }
 
@@ -336,7 +336,7 @@ void WorkAsync(uv_work_t *req)
 
         if (mystruct->d1IsPlaying != _mystruct->d1IsPlaying)
         {
-            bool d1IsPlaying = mystruct->d1IsPlaying;
+            int d1IsPlaying = mystruct->d1IsPlaying;
 
             _mystruct->d1IsPlaying = d1IsPlaying;
             data->d1IsPlaying = d1IsPlaying;
@@ -442,7 +442,7 @@ void WorkAsync(uv_work_t *req)
 
         if (mystruct->d2IsPlaying != _mystruct->d2IsPlaying)
         {
-            bool d2IsPlaying = mystruct->d2IsPlaying;
+            int d2IsPlaying = mystruct->d2IsPlaying;
 
             _mystruct->d2IsPlaying = d2IsPlaying;
             data->d2IsPlaying = d2IsPlaying;

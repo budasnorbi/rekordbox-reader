@@ -236,7 +236,7 @@ Changes* getData() {
 			break;
 		}
 		case 8: {
-			changes->d1IsPlaying = data[0];
+			changes->d1IsPlaying = (int)data[0];
 			break;
 		}
 		case 9: {
@@ -276,7 +276,7 @@ Changes* getData() {
 			break;
 		}
 		case 18: {
-			changes->d2IsPlaying = data[0];
+			changes->d2IsPlaying = (int)data[0];
 			break;
 		}
 		case 19: {
