@@ -70,7 +70,7 @@ But after that, only those properties will be in the changes object that are cha
 
 #### getSongByID
 
-| It retrieves the song details from rekordbox internal database
+> It retrieves the song details from rekordbox internal database
 
 ```js
 const { trackChanges, getSongByID } = require("rekordbox-reader");
