@@ -491,10 +491,13 @@ void WorkAsync(uv_work_t *req)
             work->data = data;
             uv_async_send(&work->async);
         }
+        else
+        {
+            delete data;
+        }
 
         FreeLibrary(dllHandle);
         delete mystruct;
-        delete data;
     }
 }
 
