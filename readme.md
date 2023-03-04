@@ -65,3 +65,21 @@ But after that, only those properties will be in the changes object that are cha
 ```js
 { d1IsPlaying: true, d1CurrentTime: 0.056643990929705214 }
 ```
+
+## Features
+
+#### getSongByID
+
+| It retrieves the song details from rekordbox internal database
+
+```js
+const { trackChanges, getSongByID } = require("rekordbox-reader");
+
+trackChanges((changes) => {
+  if (changes.d1SongId) {
+    getSongByID(changes.d1SongId).then((data) => {
+      console.log(data);
+    });
+  }
+});
+```
