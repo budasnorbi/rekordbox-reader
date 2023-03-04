@@ -34,29 +34,33 @@ trackChanges((changes) => {
 
 The first time when the callback is fired it gives back all the changed properties:
 
-```js
+```ts
 {
-  d1ChannelFader: 0.8250015259720442,
-  d1CfxKnob: 0.500030517578125,
-  d1LowFilter: 0.5000305194408838,
-  d1MidFilter: 0.5000305194408838,
-  d1HighFilter: 0.5000305194408838,
-  d1TrimKnob: 0.4717084783006775,
-  d1SongId: 2645840387,
-  d1CurrentTime: 0.04598639455782313,
-  d1CalculatedTempo: 124,
-  d1CalculatedFristBeat: 0.046,
-  d2ChannelFader: 1,
-  d2CfxKnob: 0.500030517578125,
-  d2LowFilter: 0.5000305194408838,
-  d2MidFilter: 0.5000305194408838,
-  d2HighFilter: 0.5000305194408838,
-  d2TrimKnob: 0.5005188304950253,
-  d2SongId: 2796361984,
-  d2CurrentTime: 0.6586621315192743,
-  d2CalculatedTempo: 128,
-  d2CalculatedFristBeat: 0.12,
-  crossfader: 0.7423548800585973
+  d1ChannelFader: number;
+  d1CfxKnob: number;
+  d1LowFilter: number;
+  d1MidFilter: number;
+  d1HighFilter: number;
+  d1TrimKnob: number;
+  d1Tempo: number;
+  d1SongId: number;
+  d1IsPlaying: boolean;
+  d1CurrentTime: number;
+  d1CalculatedTempo: number;
+  d1CalculatedFristBeat: number;
+  d2ChannelFader: number;
+  d2CfxKnob: number;
+  d2LowFilter: number;
+  d2MidFilter: number;
+  d2HighFilter: number;
+  d2TrimKnob: number;
+  d2Tempo: number;
+  d2SongId: number;
+  d2IsPlaying: boolean;
+  d2CurrentTime: number;
+  d2CalculatedTempo: number;
+  d2CalculatedFristBeat: number;
+  crossfader: number;
 }
 ```
 
@@ -82,4 +86,89 @@ trackChanges((changes) => {
     });
   }
 });
+```
+
+The getSongByID is an async function and it resolves with the following interface
+
+```ts
+{
+  ID: string;
+  FolderPath: string;
+  FileNameL: string;
+  FileNameS: string;
+  Title: string;
+  ArtistID: string;
+  AlbumID: string;
+  GenreID: string;
+  BPM: number;
+  Length: number;
+  TrackNo: number;
+  BitRate: number;
+  BitDepth: number;
+  Commnt: string;
+  FileType: number;
+  Rating: number;
+  ReleaseYear: number;
+  RemixerID: string;
+  LabelID: string;
+  OrgArtistID: string;
+  KeyID: string;
+  StockDate: string;
+  ColorID: string;
+  DJPlayCount: number;
+  ImagePath: string;
+  MasterDBID: string;
+  MasterSongID: string;
+  AnalysisDataPath: string;
+  SearchStr: string;
+  FileSize: number;
+  DiscNo: number;
+  ComposerID: string;
+  Subtitle: string;
+  SampleRate: number;
+  DisableQuantize: number;
+  Analysed: number;
+  ReleaseDate: string;
+  DateCreated: string;
+  ContentLink: number;
+  Tag: string;
+  ModifiedByRBM: string;
+  HotCueAutoLoad: string;
+  DeliveryControl: string;
+  DeliveryComment: string;
+  CueUpdated: string;
+  AnalysisUpdated: string;
+  TrackInfoUpdated: string;
+  Lyricist: string;
+  ISRC: string;
+  SamplerTrackInfo: number;
+  SamplerPlayOffset: number;
+  SamplerGain: number;
+  VideoAssociate: string;
+  LyricStatus: number;
+  ServiceID: number;
+  OrgFolderPath: string;
+  Reserved1: string;
+  Reserved2: string;
+  Reserved3: string;
+  Reserved4: string;
+  ExtInfo: string;
+  rb_file_id: string;
+  DeviceID: string;
+  rb_LocalFolderPath: string;
+  SrcID: string;
+  SrcTitle: string;
+  SrcArtistName: string;
+  SrcAlbumName: string;
+  SrcLength: number;
+  UUID: string;
+  rb_data_status: number;
+  rb_local_data_status: number;
+  rb_local_deleted: number;
+  rb_local_synced: number;
+  usn: number;
+  rb_local_usn: number;
+  created_at: number;
+  updated_at: number;
+}
 ```
