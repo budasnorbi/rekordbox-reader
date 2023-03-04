@@ -31,6 +31,7 @@ double ToDouble(const std::vector<unsigned char>& from, int byteOrder = BIG_ENDI
 }
 
 uint32_t ToUint32(std::vector<unsigned char> v) {
+	std::reverse(v.begin(), v.end());
 	uint32_t result = 0;
 	result |= v[0] << 24;
 	result |= v[1] << 16;
