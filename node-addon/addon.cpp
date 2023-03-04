@@ -41,16 +41,6 @@ struct MyStruct
 
 typedef MyStruct *(*DLLFunction1)();
 
-struct Work
-{
-    uv_work_t request;
-    Persistent<Function> callback;
-};
-
-void WorkAsync(uv_work_t *req)
-{
-}
-
 std::string GetCurrentDirectory()
 {
     char buffer[MAX_PATH];
@@ -60,19 +50,184 @@ std::string GetCurrentDirectory()
     return std::string(buffer).substr(0, pos);
 }
 
-void WorkAsyncComplete(uv_work_t *req, int status)
+struct Work
+{
+    uv_work_t request;
+    Persistent<Function> callback;
+    uv_async_t async;
+    MyStruct *data;
+};
+
+void AsyncCb(uv_async_t *handle)
 {
     Isolate *isolate = Isolate::GetCurrent();
     HandleScope scope(isolate);
-    Work *work = static_cast<Work *>(req->data);
+    Work *work = static_cast<Work *>(handle->data);
 
     Local<Function> callback = Local<Function>::New(isolate, work->callback);
 
-    MyStruct *_mystruct = new MyStruct();
+    Local<Object> obj = Object::New(isolate);
     int updatedValues = 0;
 
-    Local<Object> obj = Object::New(isolate);
+    if (work->data->d1ChannelFader)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1ChannelFader").ToLocalChecked(), Number::New(isolate, work->data->d1ChannelFader));
+        updatedValues++;
+    }
 
+    if (work->data->d1CfxKnob)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CfxKnob").ToLocalChecked(), Number::New(isolate, work->data->d1CfxKnob));
+        updatedValues++;
+    }
+
+    if (work->data->d1LowFilter)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1LowFilter").ToLocalChecked(), Number::New(isolate, work->data->d1LowFilter));
+        updatedValues++;
+    }
+
+    if (work->data->d1MidFilter)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1MidFilter").ToLocalChecked(), Number::New(isolate, work->data->d1MidFilter));
+        updatedValues++;
+    }
+
+    if (work->data->d1HighFilter)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1HighFilter").ToLocalChecked(), Number::New(isolate, work->data->d1HighFilter));
+        updatedValues++;
+    }
+
+    if (work->data->d1TrimKnob)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1TrimKnob").ToLocalChecked(), Number::New(isolate, work->data->d1TrimKnob));
+        updatedValues++;
+    }
+
+    if (work->data->d1Tempo)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1Tempo").ToLocalChecked(), Number::New(isolate, work->data->d1Tempo));
+        updatedValues++;
+    }
+
+    if (work->data->d1SongId)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1SongId").ToLocalChecked(), Number::New(isolate, work->data->d1SongId));
+        updatedValues++;
+    }
+
+    if (work->data->d1IsPlaying)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1IsPlaying").ToLocalChecked(), Boolean::New(isolate, work->data->d1IsPlaying));
+        updatedValues++;
+    }
+
+    if (work->data->d1CurrentTime)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CurrentTime").ToLocalChecked(), Number::New(isolate, work->data->d1CurrentTime));
+        updatedValues++;
+    }
+
+    if (work->data->d1CalculatedTempo)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedTempo").ToLocalChecked(), Number::New(isolate, work->data->d1CalculatedTempo));
+        updatedValues++;
+    }
+
+    if (work->data->d1CalculatedFristBeat)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedFristBeat").ToLocalChecked(), Number::New(isolate, work->data->d1CalculatedFristBeat));
+        updatedValues++;
+    }
+
+    if (work->data->d2ChannelFader)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2ChannelFader").ToLocalChecked(), Number::New(isolate, work->data->d2ChannelFader));
+        updatedValues++;
+    }
+
+    if (work->data->d2CfxKnob)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CfxKnob").ToLocalChecked(), Number::New(isolate, work->data->d2CfxKnob));
+        updatedValues++;
+    }
+
+    if (work->data->d2LowFilter)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2LowFilter").ToLocalChecked(), Number::New(isolate, work->data->d2LowFilter));
+        updatedValues++;
+    }
+
+    if (work->data->d2MidFilter)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2MidFilter").ToLocalChecked(), Number::New(isolate, work->data->d2MidFilter));
+        updatedValues++;
+    }
+
+    if (work->data->d2HighFilter)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2HighFilter").ToLocalChecked(), Number::New(isolate, work->data->d2HighFilter));
+        updatedValues++;
+    }
+
+    if (work->data->d2TrimKnob)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2TrimKnob").ToLocalChecked(), Number::New(isolate, work->data->d2TrimKnob));
+        updatedValues++;
+    }
+
+    if (work->data->d2Tempo)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2Tempo").ToLocalChecked(), Number::New(isolate, work->data->d2Tempo));
+        updatedValues++;
+    }
+
+    if (work->data->d2SongId)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2SongId").ToLocalChecked(), Number::New(isolate, work->data->d2SongId));
+        updatedValues++;
+    }
+
+    if (work->data->d2IsPlaying)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2IsPlaying").ToLocalChecked(), Boolean::New(isolate, work->data->d2IsPlaying));
+        updatedValues++;
+    }
+
+    if (work->data->d2CurrentTime)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CurrentTime").ToLocalChecked(), Number::New(isolate, work->data->d2CurrentTime));
+        updatedValues++;
+    }
+
+    if (work->data->d2CalculatedTempo)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedTempo").ToLocalChecked(), Number::New(isolate, work->data->d2CalculatedTempo));
+        updatedValues++;
+    }
+
+    if (work->data->d2CalculatedFristBeat)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedFristBeat").ToLocalChecked(), Number::New(isolate, work->data->d2CalculatedFristBeat));
+        updatedValues++;
+    }
+
+    if (work->data->crossfader)
+    {
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "crossfader").ToLocalChecked(), Number::New(isolate, work->data->crossfader));
+        updatedValues++;
+    }
+
+    if (updatedValues != 0)
+    {
+        Local<Value> argv[1] = {obj};
+        callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
+    }
+}
+
+void WorkAsync(uv_work_t *req)
+{
     std::string filePath = "node_modules/rekordbox-reader/reader.dll";
     std::filesystem::path absolutePath = std::filesystem::absolute(filePath);
 
@@ -81,6 +236,11 @@ void WorkAsyncComplete(uv_work_t *req, int status)
     int requiredSize = WideCharToMultiByte(CP_UTF8, 0, wstrAbsolutePath.c_str(), -1, nullptr, 0, nullptr, nullptr);
     std::string strAbsolutePath(requiredSize, 0);
     WideCharToMultiByte(CP_UTF8, 0, wstrAbsolutePath.c_str(), -1, strAbsolutePath.data(), requiredSize, nullptr, nullptr);
+
+    Work *work = static_cast<Work *>(req->data);
+
+    MyStruct *_mystruct = new MyStruct();
+    int updatedValues = 0;
 
     while (true)
     {
@@ -91,6 +251,7 @@ void WorkAsyncComplete(uv_work_t *req, int status)
             printf("%s", "dll error");
             return;
         }
+
         DLLFunction1 getData = (DLLFunction1)GetProcAddress(dllHandle, "getData");
 
         if (getData == NULL)
@@ -101,201 +262,246 @@ void WorkAsyncComplete(uv_work_t *req, int status)
         }
 
         MyStruct *mystruct = getData();
+        MyStruct *data = new MyStruct();
 
         if (mystruct->d1ChannelFader != _mystruct->d1ChannelFader)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1ChannelFader").ToLocalChecked(), Number::New(isolate, mystruct->d1ChannelFader));
-            _mystruct->d1ChannelFader = mystruct->d1ChannelFader;
+            double d1ChannelFader = mystruct->d1ChannelFader;
+            _mystruct->d1ChannelFader = d1ChannelFader;
+            data->d1ChannelFader = d1ChannelFader;
+
             updatedValues++;
         }
 
         if (mystruct->d1CfxKnob != _mystruct->d1CfxKnob)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CfxKnob").ToLocalChecked(), Number::New(isolate, mystruct->d1CfxKnob));
-            _mystruct->d1CfxKnob = mystruct->d1CfxKnob;
+            double d1CfxKnob = mystruct->d1CfxKnob;
+            _mystruct->d1CfxKnob = d1CfxKnob;
+            data->d1CfxKnob = d1CfxKnob;
             updatedValues++;
         }
 
         if (mystruct->d1LowFilter != _mystruct->d1LowFilter)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1LowFilter").ToLocalChecked(), Number::New(isolate, mystruct->d1LowFilter));
-            _mystruct->d1LowFilter = mystruct->d1LowFilter;
+            double d1LowFilter = mystruct->d1LowFilter;
+
+            _mystruct->d1LowFilter = d1LowFilter;
+            data->d1LowFilter = d1LowFilter;
             updatedValues++;
         }
 
         if (mystruct->d1MidFilter != _mystruct->d1MidFilter)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1MidFilter").ToLocalChecked(), Number::New(isolate, mystruct->d1MidFilter));
-            _mystruct->d1MidFilter = mystruct->d1MidFilter;
+            double d1MidFilter = mystruct->d1MidFilter;
+
+            _mystruct->d1MidFilter = d1MidFilter;
+            data->d1MidFilter = d1MidFilter;
             updatedValues++;
         }
 
         if (mystruct->d1HighFilter != _mystruct->d1HighFilter)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1HighFilter").ToLocalChecked(), Number::New(isolate, mystruct->d1HighFilter));
-            _mystruct->d1HighFilter = mystruct->d1HighFilter;
+            double d1HighFilter = mystruct->d1HighFilter;
+
+            _mystruct->d1HighFilter = d1HighFilter;
+            data->d1HighFilter = d1HighFilter;
             updatedValues++;
         }
 
         if (mystruct->d1TrimKnob != _mystruct->d1TrimKnob)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1TrimKnob").ToLocalChecked(), Number::New(isolate, mystruct->d1TrimKnob));
-            _mystruct->d1TrimKnob = mystruct->d1TrimKnob;
+            double d1TrimKnob = mystruct->d1TrimKnob;
+
+            _mystruct->d1TrimKnob = d1TrimKnob;
+            data->d1TrimKnob = d1TrimKnob;
             updatedValues++;
         }
 
         if (mystruct->d1Tempo != _mystruct->d1Tempo)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1Tempo").ToLocalChecked(), Number::New(isolate, mystruct->d1Tempo));
-            _mystruct->d1Tempo = mystruct->d1Tempo;
+            double d1Tempo = mystruct->d1Tempo;
+
+            _mystruct->d1Tempo = d1Tempo;
+            data->d1Tempo = d1Tempo;
             updatedValues++;
         }
 
         if (mystruct->d1SongId != _mystruct->d1SongId)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1SongId").ToLocalChecked(), Number::New(isolate, mystruct->d1SongId));
-            _mystruct->d1SongId = mystruct->d1SongId;
+            uint32_t d1SongId = mystruct->d1SongId;
+            _mystruct->d1SongId = d1SongId;
+            data->d1SongId = d1SongId;
             updatedValues++;
         }
 
         if (mystruct->d1IsPlaying != _mystruct->d1IsPlaying)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1IsPlaying").ToLocalChecked(), Boolean::New(isolate, mystruct->d1IsPlaying));
-            _mystruct->d1IsPlaying = mystruct->d1IsPlaying;
+            bool d1IsPlaying = mystruct->d1IsPlaying;
+
+            _mystruct->d1IsPlaying = d1IsPlaying;
+            data->d1IsPlaying = d1IsPlaying;
             updatedValues++;
         }
 
         if (mystruct->d1CurrentTime != _mystruct->d1CurrentTime)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CurrentTime").ToLocalChecked(), Number::New(isolate, mystruct->d1CurrentTime));
-            _mystruct->d1CurrentTime = mystruct->d1CurrentTime;
+            double d1CurrentTime = mystruct->d1CurrentTime;
+
+            _mystruct->d1CurrentTime = d1CurrentTime;
+            data->d1CurrentTime = d1CurrentTime;
             updatedValues++;
         }
 
         if (mystruct->d1CalculatedTempo != _mystruct->d1CalculatedTempo)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedTempo").ToLocalChecked(), Number::New(isolate, mystruct->d1CalculatedTempo));
-            _mystruct->d1CalculatedTempo = mystruct->d1CalculatedTempo;
+            double d1CalculatedTempo = mystruct->d1CalculatedTempo;
+
+            _mystruct->d1CalculatedTempo = d1CalculatedTempo;
+            data->d1CalculatedTempo = d1CalculatedTempo;
             updatedValues++;
         }
 
         if (mystruct->d1CalculatedFristBeat != _mystruct->d1CalculatedFristBeat)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedFristBeat").ToLocalChecked(), Number::New(isolate, mystruct->d1CalculatedFristBeat));
-            _mystruct->d1CalculatedFristBeat = mystruct->d1CalculatedFristBeat;
+            double d1CalculatedFristBeat = mystruct->d1CalculatedFristBeat;
+
+            _mystruct->d1CalculatedFristBeat = d1CalculatedFristBeat;
+            data->d1CalculatedFristBeat = d1CalculatedFristBeat;
             updatedValues++;
         }
 
         if (mystruct->d2ChannelFader != _mystruct->d2ChannelFader)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2ChannelFader").ToLocalChecked(), Number::New(isolate, mystruct->d2ChannelFader));
-            _mystruct->d2ChannelFader = mystruct->d2ChannelFader;
+            double d2ChannelFader = mystruct->d2ChannelFader;
+            _mystruct->d2ChannelFader = d2ChannelFader;
+            data->d2ChannelFader = d2ChannelFader;
+
             updatedValues++;
         }
 
         if (mystruct->d2CfxKnob != _mystruct->d2CfxKnob)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CfxKnob").ToLocalChecked(), Number::New(isolate, mystruct->d2CfxKnob));
-            _mystruct->d2CfxKnob = mystruct->d2CfxKnob;
+            double d2CfxKnob = mystruct->d2CfxKnob;
+            _mystruct->d2CfxKnob = d2CfxKnob;
+            data->d2CfxKnob = d2CfxKnob;
             updatedValues++;
         }
 
         if (mystruct->d2LowFilter != _mystruct->d2LowFilter)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2LowFilter").ToLocalChecked(), Number::New(isolate, mystruct->d2LowFilter));
-            _mystruct->d2LowFilter = mystruct->d2LowFilter;
+            double d2LowFilter = mystruct->d2LowFilter;
+
+            _mystruct->d2LowFilter = d2LowFilter;
+            data->d2LowFilter = d2LowFilter;
             updatedValues++;
         }
 
         if (mystruct->d2MidFilter != _mystruct->d2MidFilter)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2MidFilter").ToLocalChecked(), Number::New(isolate, mystruct->d2MidFilter));
-            _mystruct->d2MidFilter = mystruct->d2MidFilter;
+            double d2MidFilter = mystruct->d2MidFilter;
+
+            _mystruct->d2MidFilter = d2MidFilter;
+            data->d2MidFilter = d2MidFilter;
             updatedValues++;
         }
 
         if (mystruct->d2HighFilter != _mystruct->d2HighFilter)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2HighFilter").ToLocalChecked(), Number::New(isolate, mystruct->d2HighFilter));
-            _mystruct->d2HighFilter = mystruct->d2HighFilter;
+            double d2HighFilter = mystruct->d2HighFilter;
+
+            _mystruct->d2HighFilter = d2HighFilter;
+            data->d2HighFilter = d2HighFilter;
             updatedValues++;
         }
 
         if (mystruct->d2TrimKnob != _mystruct->d2TrimKnob)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2TrimKnob").ToLocalChecked(), Number::New(isolate, mystruct->d2TrimKnob));
-            _mystruct->d2TrimKnob = mystruct->d2TrimKnob;
+            double d2TrimKnob = mystruct->d2TrimKnob;
+
+            _mystruct->d2TrimKnob = d2TrimKnob;
+            data->d2TrimKnob = d2TrimKnob;
             updatedValues++;
         }
 
         if (mystruct->d2Tempo != _mystruct->d2Tempo)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2Tempo").ToLocalChecked(), Number::New(isolate, mystruct->d2Tempo));
-            _mystruct->d2Tempo = mystruct->d2Tempo;
+            double d2Tempo = mystruct->d2Tempo;
+
+            _mystruct->d2Tempo = d2Tempo;
+            data->d2Tempo = d2Tempo;
             updatedValues++;
         }
 
         if (mystruct->d2SongId != _mystruct->d2SongId)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2SongId").ToLocalChecked(), Number::New(isolate, mystruct->d2SongId));
-            _mystruct->d2SongId = mystruct->d2SongId;
+            uint32_t d2SongId = mystruct->d2SongId;
+            _mystruct->d2SongId = d2SongId;
+            data->d2SongId = d2SongId;
             updatedValues++;
         }
 
         if (mystruct->d2IsPlaying != _mystruct->d2IsPlaying)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2IsPlaying").ToLocalChecked(), Boolean::New(isolate, mystruct->d2IsPlaying));
-            _mystruct->d2IsPlaying = mystruct->d2IsPlaying;
+            bool d2IsPlaying = mystruct->d2IsPlaying;
+
+            _mystruct->d2IsPlaying = d2IsPlaying;
+            data->d2IsPlaying = d2IsPlaying;
             updatedValues++;
         }
 
         if (mystruct->d2CurrentTime != _mystruct->d2CurrentTime)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CurrentTime").ToLocalChecked(), Number::New(isolate, mystruct->d2CurrentTime));
-            _mystruct->d2CurrentTime = mystruct->d2CurrentTime;
+            double d2CurrentTime = mystruct->d2CurrentTime;
+
+            _mystruct->d2CurrentTime = d2CurrentTime;
+            data->d2CurrentTime = d2CurrentTime;
             updatedValues++;
         }
 
         if (mystruct->d2CalculatedTempo != _mystruct->d2CalculatedTempo)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedTempo").ToLocalChecked(), Number::New(isolate, mystruct->d2CalculatedTempo));
-            _mystruct->d2CalculatedTempo = mystruct->d2CalculatedTempo;
+            double d2CalculatedTempo = mystruct->d2CalculatedTempo;
+
+            _mystruct->d2CalculatedTempo = d2CalculatedTempo;
+            data->d2CalculatedTempo = d2CalculatedTempo;
             updatedValues++;
         }
 
         if (mystruct->d2CalculatedFristBeat != _mystruct->d2CalculatedFristBeat)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedFristBeat").ToLocalChecked(), Number::New(isolate, mystruct->d2CalculatedFristBeat));
-            _mystruct->d2CalculatedFristBeat = mystruct->d2CalculatedFristBeat;
+            double d2CalculatedFristBeat = mystruct->d2CalculatedFristBeat;
+
+            _mystruct->d2CalculatedFristBeat = d2CalculatedFristBeat;
+            data->d2CalculatedFristBeat = d2CalculatedFristBeat;
             updatedValues++;
         }
 
         if (mystruct->crossfader != _mystruct->crossfader)
         {
-            obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "crossfader").ToLocalChecked(), Number::New(isolate, mystruct->crossfader));
-            _mystruct->crossfader = mystruct->crossfader;
+            double crossfader = mystruct->crossfader;
+
+            _mystruct->crossfader = crossfader;
+            data->crossfader = crossfader;
             updatedValues++;
         }
 
         if (updatedValues != 0)
         {
-            Local<Value> argv[1] = {obj};
             updatedValues = 0;
-            callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
-
-            Local<Array> propertyNames = obj->GetPropertyNames(isolate->GetCurrentContext()).ToLocalChecked();
-            for (uint32_t i = 0; i < propertyNames->Length(); i++)
-            {
-                Local<Value> key = propertyNames->Get(isolate->GetCurrentContext(), i).ToLocalChecked();
-                obj->Delete(isolate->GetCurrentContext(), key);
-            }
+            work->data = data;
+            uv_async_send(&work->async);
         }
 
-        work->callback.Reset();
         FreeLibrary(dllHandle);
         delete mystruct;
+        delete data;
     }
+}
 
+void WorkAsyncComplete(uv_work_t *req, int status)
+{
+    Work *work = static_cast<Work *>(req->data);
+    uv_close(reinterpret_cast<uv_handle_t *>(&work->async), NULL);
     delete work;
 }
 
@@ -311,6 +517,8 @@ void trackChanges(const FunctionCallbackInfo<Value> &args)
     Work *work = new Work();
     work->request.data = work;
     work->callback.Reset(isolate, callback);
+    uv_async_init(uv_default_loop(), &work->async, AsyncCb);
+    work->async.data = work;
 
     // Start the worker thread and pass it the Work object.
     uv_queue_work(uv_default_loop(), &work->request, WorkAsync, WorkAsyncComplete);
