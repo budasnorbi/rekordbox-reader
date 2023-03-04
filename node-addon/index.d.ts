@@ -26,6 +26,23 @@ interface Changes {
   crossfader: number;
 }
 
+interface djmdContentRow {
+  ID: string;
+  ContentID: string;
+  Cues: string;
+  rb_cue_count: number;
+  UUID: string;
+  rb_data_status: number;
+  rb_local_data_status: number;
+  rb_local_deleted: number;
+  rb_local_synced: number;
+  usn: number;
+  rb_local_usn: number;
+  created_at: number;
+  updated_at: number;
+}
+
 declare module "rekordbox-reader" {
   export function trackChanges(callback: (changes: Changes) => void): void;
+  export function getSongByID(songId: number | string): Promise<any>;
 }
