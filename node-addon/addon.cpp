@@ -224,6 +224,8 @@ void AsyncCb(uv_async_t *handle)
         Local<Value> argv[1] = {obj};
         callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
     }
+
+    delete work->data;
 }
 
 void WorkAsync(uv_work_t *req)
