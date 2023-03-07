@@ -1,8 +1,9 @@
 # Rekordbox reader for Windows
 
-**Reads rekordbox decks values from memory**
-The project goal is to solve those ones problems, who bought a beginner pionner's dj controller like the DDJ-FLX4 and still want to get the time codes of the current played song like on the expensive ones or track more actions like changing the crossfader or the deck knobs.
-This repository contains a dll project and a node package project.
+**Reads rekordbox decks values from memory.**
+
+The project goal is to solve those ones problems, who bought a beginner pionner's dj controller like the DDJ-FLX4 and still want to get the time codes of the current played song like on the expensive ones or track more actions like changing the crossfader the channel faders or the deck knobs.
+This repository contains a dll project and a node package project too.
 
 #### It currently support rekordbox 6.6.8
 
