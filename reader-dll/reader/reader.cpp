@@ -129,73 +129,65 @@ static uintptr_t base = GetModuleBaseAddress(procId, L"rekordbox.exe");
 static HANDLE hProcess = OpenProcess(PROCESS_VM_READ, NULL, procId);
 static std::vector<Packet> packets = {
 	// D1 CHANNEL FADER
-	Packet(0, sizeof(double), FindDMAAddy(hProcess, base + 0x03F950A8, {})),
-	// D1 CFX KNOB
-	Packet(1, sizeof(double), FindDMAAddy(hProcess, base + 0x03F626C8, {0x28, 0x50, 0x128, 0x100, 0x0, 0xE0, 0xB0})),
+	Packet(0, sizeof(double), FindDMAAddy(hProcess, base + 0x3FC5458, {})),
+	// D1 CFX KNOB - here only the address changed, the offsets doesn't
+	Packet(1, sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x50, 0x128, 0x100, 0x0, 0xE0, 0xB0})),
 	// D1 LOW FILTER KNOB
-	Packet(2, sizeof(double), FindDMAAddy(hProcess, base + 0x03EA7BA8, {})),
+	Packet(2, sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EA8, {})),
 	// D1 MID FILTER KNOB
-	Packet(3, sizeof(double), FindDMAAddy(hProcess, base + 0x03EA7BA0, {})),
+	Packet(3, sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EA0, {})),
 	// D1 HIGH FILTER KNOB
-	Packet(4, sizeof(double), FindDMAAddy(hProcess, base + 0x03EA7B98, {})),
-	// D1 TRIM KNOB
-	Packet(5, sizeof(double), FindDMAAddy(hProcess, base + 0x03F95098, {})),
-	// D1 TEMPO
-	Packet(6, sizeof(double), FindDMAAddy(hProcess, base + 0x03FBF5E0, {0x160, 0x40, 0x78, 0xE0, 0xB0})),
+	Packet(4, sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4E98, {})),
 	// D1 SONG ID
-	Packet(7, sizeof(4), FindDMAAddy(hProcess, base + 0x03FCB738, {0x8, 0x240, 0xF0, 0x58, 0x0, 0x1C0, 0x1C})),
+	Packet(7, sizeof(4), FindDMAAddy(hProcess, base + 0x03F929E8, {0x60, 0x88, 0x20, 0x2A0, 0x38})),
 	// D1 IS PLAYING
-	Packet(8, sizeof(unsigned char), FindDMAAddy(hProcess, base + 0x03FCA690, {0x138, 0x38, 0x68, 0x3E0, 0xF8, 0x0, 0x1A4})),
+	Packet(8, sizeof(unsigned char), FindDMAAddy(hProcess, base + 0x03F92C60, {0x20, 0x2D0, 0x70, 0x40, 0x150, 0x188})),
 	// D1 CURRENT TIME
-	Packet(9, sizeof(double), FindDMAAddy(hProcess, base + 0x03FCA690, {0x138, 0x38, 0x68, 0x3E0, 0xF8, 0x0, 0x138})),
+	Packet(9, sizeof(double), FindDMAAddy(hProcess, base + 0x03F964C8, {0x40, 0x110, 0x288, 0xA8, 0x40, 0x150, 0x138})),
 
 	// D2 CHANNEL FADER
-	Packet(10, sizeof(double), FindDMAAddy(hProcess, base + 0x03F950B0, {})),
+	Packet(10, sizeof(double), FindDMAAddy(hProcess, base + 0x3FC5460, {})),
 	// D2 CFX KNOB
-	Packet(11, sizeof(double), FindDMAAddy(hProcess, base + 0x03F626C8, {0x28, 0x50, 0x128, 0x40, 0x10, 0xE0, 0xB0})),
+	Packet(11, sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x50, 0x128, 0x40, 0x10, 0xE0, 0xB0})),
 	// D2 LOW FILTER KNOB
-	Packet(12, sizeof(double), FindDMAAddy(hProcess, base + 0x03EA7BC0, {})),
+	Packet(12, sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EC0, {})),
 	// D2 MID FILTER KNOB
-	Packet(13, sizeof(double), FindDMAAddy(hProcess, base + 0x03EA7BB8, {})),
+	Packet(13, sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EB8, {})),
 	// D2 HIGH FILTER KNOB
-	Packet(14, sizeof(double), FindDMAAddy(hProcess, base + 0x03EA7BB0, {})),
-	// D2 TRIM KNOB
-	Packet(15, sizeof(double), FindDMAAddy(hProcess, base + 0x03F950A0, {})),
-	// D2 TEMPO
-	Packet(16, sizeof(double), FindDMAAddy(hProcess, base + 0x03F626C8, {0x70, 0x10, 0x18, 0x40, 0x78, 0xE0, 0xB0})),
+	Packet(14, sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EB0, {})),
 	// D2 SONG ID
-	Packet(17, sizeof(4), FindDMAAddy(hProcess, base + 0x03F626C8, {0x98, 0x20, 0x18, 0x10, 0x8, 0x3C0})),
+	Packet(17, sizeof(4), FindDMAAddy(hProcess, base + 0x03F929E8, {0x70, 0x10, 0x18, 0x200, 0x198, 0x8, 0x3B8})),
 	// D2 IS PLAYING
-	Packet(18, sizeof(unsigned char), FindDMAAddy(hProcess, base + 0x03FCA690, {0x1D8, 0x8, 0x10, 0x60, 0x40, 0x150, 0x188})),
+	Packet(18, sizeof(unsigned char), FindDMAAddy(hProcess, base + 0x03F929E8, {0x60, 0x5F0, 0x248, 0xF8, 0x28, 0x8E0})),
 	// D2 CURRENT TIME
-	Packet(19, sizeof(double), FindDMAAddy(hProcess, base + 0x03FACDB8, {
-																			0xF0,
+	Packet(19, sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {
+																			0x28,
+																			0x10,
+																			0x68,
 																			0x3E0,
 																			0xF8,
 																			0x8,
-																			0xA0,
-																			0x108,
 																			0x138,
 																		})),
 	// CROSSFADER
-	Packet(20, sizeof(double), FindDMAAddy(hProcess, base + 0x03F626C8, {
-																			0x60,
-																			0x670,
+	Packet(20, sizeof(double), FindDMAAddy(hProcess, base + 0x03FA3638, {
+																			0x18,
+																			0x18,
+																			0x18,
+																			0x8,
 																			0x38,
-																			0x38,
-																			0x0,
-																			0x120,
-																			0x2C8,
+																			0x20,
+																			0x178,
 																		})),
 
 	// D1 CALCULATED TEMPO
-	Packet(30, sizeof(double), FindDMAAddy(hProcess, base + 0x03FBF5E0, {0x10, 0x40, 0x0, 0x58, 0x278, 0xB0})),
+	Packet(30, sizeof(double), FindDMAAddy(hProcess, base + 0x03FEFA50, {0x10, 0x40, 0x0, 0x58, 0x278, 0xB0})),
 	// D1 CALCULATED FIRST BEAT TIME
-	Packet(31, sizeof(double), FindDMAAddy(hProcess, base + 0x03F626C8, {0x28, 0x10, 0x68, 0x3E0, 0xF8, 0x0, 0x140})),
+	Packet(31, sizeof(double), FindDMAAddy(hProcess, base + 0x03F964C8, {0x40, 0x110, 0x288, 0xA8, 0x40, 0x150, 0x140})),
 	// D2 CALCULATED TEMPO
-	Packet(40, sizeof(double), FindDMAAddy(hProcess, base + 0x03FBF5E0, {0x18, 0x40, 0x0, 0x58, 0x278, 0xB0})),
+	Packet(40, sizeof(double), FindDMAAddy(hProcess, base + 0x03FEFA50, {0x18, 0x40, 0x0, 0x40, 0x0, 0xE0, 0xB0})),
 	// D2 CALCULATED FIRST BEAT TIME
-	Packet(41, sizeof(double), FindDMAAddy(hProcess, base + 0x03F626C8, {0x28, 0x10, 0x68, 0x3E0, 0xF8, 0x8, 0x140})),
+	Packet(41, sizeof(double), FindDMAAddy(hProcess, base + 0x03FA3638, {0x28, 0x2A0, 0x18, 0x160, 0xF8, 0x8, 0x140})),
 
 };
 Packet *packet;
