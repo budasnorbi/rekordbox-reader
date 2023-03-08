@@ -1,4 +1,4 @@
-interface Changes {
+export interface Changes {
   d1ChannelFader: number;
   d1CfxKnob: number;
   d1LowFilter: number;
@@ -26,7 +26,7 @@ interface Changes {
   crossfader: number;
 }
 
-interface djmdContent {
+export interface djmdContent {
   ID: string;
   FolderPath: string;
   FileNameL: string;
