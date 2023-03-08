@@ -4,8 +4,6 @@ export interface Changes {
   d1LowFilter: number;
   d1MidFilter: number;
   d1HighFilter: number;
-  d1TrimKnob: number;
-  d1Tempo: number;
   d1SongId: number;
   d1IsPlaying: boolean;
   d1CurrentTime: number;
@@ -16,8 +14,6 @@ export interface Changes {
   d2LowFilter: number;
   d2MidFilter: number;
   d2HighFilter: number;
-  d2TrimKnob: number;
-  d2Tempo: number;
   d2SongId: number;
   d2IsPlaying: boolean;
   d2CurrentTime: number;
