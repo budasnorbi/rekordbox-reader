@@ -158,7 +158,7 @@ static std::vector<Packet> packets = {
 	// D2 SONG ID
 	Packet(17, sizeof(4), FindDMAAddy(hProcess, base + 0x03F929E8, {0x70, 0x10, 0x18, 0x200, 0x198, 0x8, 0x3B8})),
 	// D2 IS PLAYING
-	Packet(18, sizeof(unsigned char), FindDMAAddy(hProcess, base + 0x03F929E8, {0x60, 0x5F0, 0x248, 0xF8, 0x28, 0x8E0})),
+	Packet(18, sizeof(unsigned char), FindDMAAddy(hProcess, base + 0x03F929E8, {0x70, 0x30, 0x108, 0x40, 0x150, 0x188})),
 	// D2 CURRENT TIME
 	Packet(19, sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {
 																			0x28,
