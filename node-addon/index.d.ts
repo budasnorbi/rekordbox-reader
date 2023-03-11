@@ -8,7 +8,7 @@ export interface Changes {
   d1IsPlaying: boolean;
   d1CurrentTime: number;
   d1CalculatedTempo: number;
-  d1CalculatedFristBeat: number;
+  d1CalculatedFirstBeat: number;
   d2ChannelFader: number;
   d2CfxKnob: number;
   d2LowFilter: number;
@@ -18,7 +18,7 @@ export interface Changes {
   d2IsPlaying: boolean;
   d2CurrentTime: number;
   d2CalculatedTempo: number;
-  d2CalculatedFristBeat: number;
+  d2CalculatedFirstBeat: number;
   crossfader: number;
 }
 
