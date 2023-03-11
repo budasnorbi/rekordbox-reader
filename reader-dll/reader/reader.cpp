@@ -319,7 +319,7 @@ Changes *getData()
 		}
 		case 31:
 		{
-			changes->d1CalculatedFristBeat = ToDouble(data, LITTLE_ENDIAN);
+			changes->d1CalculatedFirstBeat = ToDouble(data, LITTLE_ENDIAN);
 			break;
 		}
 		case 40:
@@ -329,7 +329,7 @@ Changes *getData()
 		}
 		case 41:
 		{
-			changes->d2CalculatedFristBeat = ToDouble(data, LITTLE_ENDIAN);
+			changes->d2CalculatedFirstBeat = ToDouble(data, LITTLE_ENDIAN);
 			break;
 		}
 		default:

@@ -21,7 +21,7 @@ struct MyStruct
     int d1IsPlaying = -1;
     double d1CurrentTime;
     double d1CalculatedTempo;
-    double d1CalculatedFristBeat;
+    double d1CalculatedFirstBeat;
 
     double d2ChannelFader;
     double d2CfxKnob;
@@ -34,7 +34,7 @@ struct MyStruct
     int d2IsPlaying = -1;
     double d2CurrentTime;
     double d2CalculatedTempo;
-    double d2CalculatedFristBeat;
+    double d2CalculatedFirstBeat;
 
     double crossfader;
 };
@@ -135,9 +135,9 @@ void AsyncCb(uv_async_t *handle)
         updatedValues++;
     }
 
-    if (work->data->d1CalculatedFristBeat)
+    if (work->data->d1CalculatedFirstBeat)
     {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedFristBeat").ToLocalChecked(), Number::New(isolate, work->data->d1CalculatedFristBeat));
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedFirstBeat").ToLocalChecked(), Number::New(isolate, work->data->d1CalculatedFirstBeat));
         updatedValues++;
     }
 
@@ -207,9 +207,9 @@ void AsyncCb(uv_async_t *handle)
         updatedValues++;
     }
 
-    if (work->data->d2CalculatedFristBeat)
+    if (work->data->d2CalculatedFirstBeat)
     {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedFristBeat").ToLocalChecked(), Number::New(isolate, work->data->d2CalculatedFristBeat));
+        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedFirstBeat").ToLocalChecked(), Number::New(isolate, work->data->d2CalculatedFirstBeat));
         updatedValues++;
     }
 
@@ -363,12 +363,12 @@ void WorkAsync(uv_work_t *req)
             updatedValues++;
         }
 
-        if (mystruct->d1CalculatedFristBeat != _mystruct->d1CalculatedFristBeat)
+        if (mystruct->d1CalculatedFirstBeat != _mystruct->d1CalculatedFirstBeat)
         {
-            double d1CalculatedFristBeat = mystruct->d1CalculatedFristBeat;
+            double d1CalculatedFirstBeat = mystruct->d1CalculatedFirstBeat;
 
-            _mystruct->d1CalculatedFristBeat = d1CalculatedFristBeat;
-            data->d1CalculatedFristBeat = d1CalculatedFristBeat;
+            _mystruct->d1CalculatedFirstBeat = d1CalculatedFirstBeat;
+            data->d1CalculatedFirstBeat = d1CalculatedFirstBeat;
             updatedValues++;
         }
 
@@ -469,12 +469,12 @@ void WorkAsync(uv_work_t *req)
             updatedValues++;
         }
 
-        if (mystruct->d2CalculatedFristBeat != _mystruct->d2CalculatedFristBeat)
+        if (mystruct->d2CalculatedFirstBeat != _mystruct->d2CalculatedFirstBeat)
         {
-            double d2CalculatedFristBeat = mystruct->d2CalculatedFristBeat;
+            double d2CalculatedFirstBeat = mystruct->d2CalculatedFirstBeat;
 
-            _mystruct->d2CalculatedFristBeat = d2CalculatedFristBeat;
-            data->d2CalculatedFristBeat = d2CalculatedFristBeat;
+            _mystruct->d2CalculatedFirstBeat = d2CalculatedFirstBeat;
+            data->d2CalculatedFirstBeat = d2CalculatedFirstBeat;
             updatedValues++;
         }
 

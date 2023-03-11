@@ -19,7 +19,7 @@ struct Changes {
 	int d1IsPlaying = -1;
 	double d1CurrentTime = 0.0;
 	double d1CalculatedTempo = 0.0;
-	double d1CalculatedFristBeat = 0.0;
+	double d1CalculatedFirstBeat = 0.0;
 
 	double d2ChannelFader = 0.0;
 	double d2CfxKnob = 0.0;
@@ -32,7 +32,7 @@ struct Changes {
 	int d2IsPlaying = -1;
 	double d2CurrentTime = 0.0;
 	double d2CalculatedTempo = 0.0;
-	double d2CalculatedFristBeat = 0.0;
+	double d2CalculatedFirstBeat = 0.0;
 
 	double crossfader = 0.0;
 };
