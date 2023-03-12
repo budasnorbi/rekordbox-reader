@@ -10,33 +10,26 @@ using namespace v8;
 
 struct MyStruct
 {
-    double d1ChannelFader;
-    double d1CfxKnob;
-    double d1LowFilter;
-    double d1MidFilter;
-    double d1HighFilter;
-    double d1TrimKnob;
-    double d1Tempo;
-    uint32_t d1SongId;
+    double d1ChannelFader = 0.0;
+    double d1CfxKnob = 0.0;
+    double d1LowFilter = 0.0;
+    double d1MidFilter = 0.0;
+    double d1HighFilter = 0.0;
+    uint32_t d1SongId = 0;
     int d1IsPlaying = -1;
-    double d1CurrentTime;
-    double d1CalculatedTempo;
-    double d1CalculatedFirstBeat;
+    double d1CurrentTime = 0.0;
+    double d1CalculatedTempo = 0.0;
 
-    double d2ChannelFader;
-    double d2CfxKnob;
-    double d2LowFilter;
-    double d2MidFilter;
-    double d2HighFilter;
-    double d2TrimKnob;
-    double d2Tempo;
-    uint32_t d2SongId;
+    double d2ChannelFader = 0.0;
+    double d2CfxKnob = 0.0;
+    double d2LowFilter = 0.0;
+    double d2MidFilter = 0.0;
+    double d2HighFilter = 0.0;
+    uint32_t d2SongId = 0;
     int d2IsPlaying = -1;
-    double d2CurrentTime;
-    double d2CalculatedTempo;
-    double d2CalculatedFirstBeat;
-
-    double crossfader;
+    double d2CurrentTime = 0.0;
+    double d2CalculatedTempo = 0.0;
+    double crossfader = 0.0;
 };
 
 typedef MyStruct *(*DLLFunction1)();
@@ -99,18 +92,6 @@ void AsyncCb(uv_async_t *handle)
         updatedValues++;
     }
 
-    if (work->data->d1TrimKnob)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1TrimKnob").ToLocalChecked(), Number::New(isolate, work->data->d1TrimKnob));
-        updatedValues++;
-    }
-
-    if (work->data->d1Tempo)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1Tempo").ToLocalChecked(), Number::New(isolate, work->data->d1Tempo));
-        updatedValues++;
-    }
-
     if (work->data->d1SongId)
     {
         obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1SongId").ToLocalChecked(), Number::New(isolate, work->data->d1SongId));
@@ -132,12 +113,6 @@ void AsyncCb(uv_async_t *handle)
     if (work->data->d1CalculatedTempo)
     {
         obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedTempo").ToLocalChecked(), Number::New(isolate, work->data->d1CalculatedTempo));
-        updatedValues++;
-    }
-
-    if (work->data->d1CalculatedFirstBeat)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedFirstBeat").ToLocalChecked(), Number::New(isolate, work->data->d1CalculatedFirstBeat));
         updatedValues++;
     }
 
@@ -171,18 +146,6 @@ void AsyncCb(uv_async_t *handle)
         updatedValues++;
     }
 
-    if (work->data->d2TrimKnob)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2TrimKnob").ToLocalChecked(), Number::New(isolate, work->data->d2TrimKnob));
-        updatedValues++;
-    }
-
-    if (work->data->d2Tempo)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2Tempo").ToLocalChecked(), Number::New(isolate, work->data->d2Tempo));
-        updatedValues++;
-    }
-
     if (work->data->d2SongId)
     {
         obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2SongId").ToLocalChecked(), Number::New(isolate, work->data->d2SongId));
@@ -204,12 +167,6 @@ void AsyncCb(uv_async_t *handle)
     if (work->data->d2CalculatedTempo)
     {
         obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedTempo").ToLocalChecked(), Number::New(isolate, work->data->d2CalculatedTempo));
-        updatedValues++;
-    }
-
-    if (work->data->d2CalculatedFirstBeat)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedFirstBeat").ToLocalChecked(), Number::New(isolate, work->data->d2CalculatedFirstBeat));
         updatedValues++;
     }
 
@@ -310,24 +267,6 @@ void WorkAsync(uv_work_t *req)
             updatedValues++;
         }
 
-        if (mystruct->d1TrimKnob != _mystruct->d1TrimKnob)
-        {
-            double d1TrimKnob = mystruct->d1TrimKnob;
-
-            _mystruct->d1TrimKnob = d1TrimKnob;
-            data->d1TrimKnob = d1TrimKnob;
-            updatedValues++;
-        }
-
-        if (mystruct->d1Tempo != _mystruct->d1Tempo)
-        {
-            double d1Tempo = mystruct->d1Tempo;
-
-            _mystruct->d1Tempo = d1Tempo;
-            data->d1Tempo = d1Tempo;
-            updatedValues++;
-        }
-
         if (mystruct->d1SongId != _mystruct->d1SongId)
         {
             uint32_t d1SongId = mystruct->d1SongId;
@@ -360,15 +299,6 @@ void WorkAsync(uv_work_t *req)
 
             _mystruct->d1CalculatedTempo = d1CalculatedTempo;
             data->d1CalculatedTempo = d1CalculatedTempo;
-            updatedValues++;
-        }
-
-        if (mystruct->d1CalculatedFirstBeat != _mystruct->d1CalculatedFirstBeat)
-        {
-            double d1CalculatedFirstBeat = mystruct->d1CalculatedFirstBeat;
-
-            _mystruct->d1CalculatedFirstBeat = d1CalculatedFirstBeat;
-            data->d1CalculatedFirstBeat = d1CalculatedFirstBeat;
             updatedValues++;
         }
 
@@ -416,24 +346,6 @@ void WorkAsync(uv_work_t *req)
             updatedValues++;
         }
 
-        if (mystruct->d2TrimKnob != _mystruct->d2TrimKnob)
-        {
-            double d2TrimKnob = mystruct->d2TrimKnob;
-
-            _mystruct->d2TrimKnob = d2TrimKnob;
-            data->d2TrimKnob = d2TrimKnob;
-            updatedValues++;
-        }
-
-        if (mystruct->d2Tempo != _mystruct->d2Tempo)
-        {
-            double d2Tempo = mystruct->d2Tempo;
-
-            _mystruct->d2Tempo = d2Tempo;
-            data->d2Tempo = d2Tempo;
-            updatedValues++;
-        }
-
         if (mystruct->d2SongId != _mystruct->d2SongId)
         {
             uint32_t d2SongId = mystruct->d2SongId;
@@ -466,15 +378,6 @@ void WorkAsync(uv_work_t *req)
 
             _mystruct->d2CalculatedTempo = d2CalculatedTempo;
             data->d2CalculatedTempo = d2CalculatedTempo;
-            updatedValues++;
-        }
-
-        if (mystruct->d2CalculatedFirstBeat != _mystruct->d2CalculatedFirstBeat)
-        {
-            double d2CalculatedFirstBeat = mystruct->d2CalculatedFirstBeat;
-
-            _mystruct->d2CalculatedFirstBeat = d2CalculatedFirstBeat;
-            data->d2CalculatedFirstBeat = d2CalculatedFirstBeat;
             updatedValues++;
         }
 

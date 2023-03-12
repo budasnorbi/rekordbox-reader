@@ -130,7 +130,7 @@ static HANDLE hProcess = OpenProcess(PROCESS_VM_READ, NULL, procId);
 static std::vector<Packet> packets = {
 	// D1 CHANNEL FADER
 	Packet(0, sizeof(double), FindDMAAddy(hProcess, base + 0x3FC5458, {})),
-	// D1 CFX KNOB - here only the address changed, the offsets doesn't
+	// D1 CFX KNOB 
 	Packet(1, sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x50, 0x128, 0x100, 0x0, 0xE0, 0xB0})),
 	// D1 LOW FILTER KNOB
 	Packet(2, sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EA8, {})),
@@ -181,14 +181,9 @@ static std::vector<Packet> packets = {
 																		})),
 
 	// D1 CALCULATED TEMPO
-	Packet(30, sizeof(double), FindDMAAddy(hProcess, base + 0x03FEFA50, {0x10, 0x40, 0x0, 0x58, 0x278, 0xB0})),
-	// D1 CALCULATED FIRST BEAT TIME
-	Packet(31, sizeof(double), FindDMAAddy(hProcess, base + 0x03F964C8, {0x40, 0x110, 0x288, 0xA8, 0x40, 0x150, 0x140})),
+	Packet(30, sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x10, 0x68, 0x3E0, 0xF8, 0x0, 0x120})),
 	// D2 CALCULATED TEMPO
-	Packet(40, sizeof(double), FindDMAAddy(hProcess, base + 0x03FEFA50, {0x18, 0x40, 0x0, 0x40, 0x0, 0xE0, 0xB0})),
-	// D2 CALCULATED FIRST BEAT TIME
-	Packet(41, sizeof(double), FindDMAAddy(hProcess, base + 0x03FA3638, {0x28, 0x2A0, 0x18, 0x160, 0xF8, 0x8, 0x140})),
-
+	Packet(40, sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x10, 0x68, 0x3E0, 0xF8, 0x8, 0x120})),
 };
 Packet *packet;
 
@@ -232,16 +227,6 @@ Changes *getData()
 			changes->d1HighFilter = ToDouble(data, LITTLE_ENDIAN);
 			break;
 		}
-		case 5:
-		{
-			changes->d1TrimKnob = ToDouble(data, LITTLE_ENDIAN);
-			break;
-		}
-		case 6:
-		{
-			changes->d1Tempo = ToDouble(data, LITTLE_ENDIAN);
-			break;
-		}
 		case 7:
 		{
 			changes->d1SongId = ToUint32(data);
@@ -282,16 +267,6 @@ Changes *getData()
 			changes->d2HighFilter = ToDouble(data, LITTLE_ENDIAN);
 			break;
 		}
-		case 15:
-		{
-			changes->d2TrimKnob = ToDouble(data, LITTLE_ENDIAN);
-			break;
-		}
-		case 16:
-		{
-			changes->d2Tempo = ToDouble(data, LITTLE_ENDIAN);
-			break;
-		}
 		case 17:
 		{
 			changes->d2SongId = ToUint32(data);
@@ -317,19 +292,9 @@ Changes *getData()
 			changes->d1CalculatedTempo = ToDouble(data, LITTLE_ENDIAN);
 			break;
 		}
-		case 31:
-		{
-			changes->d1CalculatedFirstBeat = ToDouble(data, LITTLE_ENDIAN);
-			break;
-		}
 		case 40:
 		{
 			changes->d2CalculatedTempo = ToDouble(data, LITTLE_ENDIAN);
-			break;
-		}
-		case 41:
-		{
-			changes->d2CalculatedFirstBeat = ToDouble(data, LITTLE_ENDIAN);
 			break;
 		}
 		default:
