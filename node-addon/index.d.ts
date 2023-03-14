@@ -1,24 +1,24 @@
-export interface Changes {
-  d1ChannelFader: number;
-  d1CfxKnob: number;
-  d1LowFilter: number;
-  d1MidFilter: number;
-  d1HighFilter: number;
-  d1SongId: number;
-  d1IsPlaying: boolean;
-  d1CurrentTime: number;
-  d1CalculatedTempo: number;
-  d2ChannelFader: number;
-  d2CfxKnob: number;
-  d2LowFilter: number;
-  d2MidFilter: number;
-  d2HighFilter: number;
-  d2SongId: number;
-  d2IsPlaying: boolean;
-  d2CurrentTime: number;
-  d2CalculatedTempo: number;
-  crossfader: number;
-}
+export type Changes = [
+  d1ChannelFader: number,
+  d1CfxKnob: number,
+  d1LowFilter: number,
+  d1MidFilter: number,
+  d1HighFilter: number,
+  d1SongId: number,
+  d1CurrentTime: number,
+  d1Tempo: number,
+  d1ChannelFader: number,
+
+  d2CfxKnob: number,
+  d2LowFilter: number,
+  d2MidFilter: number,
+  d2HighFilter: number,
+  d2SongId: number,
+  d2CurrentTime: number,
+  d2Tempo: number,
+
+  crossfader: number
+];
 
 export interface djmdContent {
   ID: string;
