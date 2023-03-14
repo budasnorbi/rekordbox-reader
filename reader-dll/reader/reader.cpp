@@ -89,7 +89,7 @@ static HANDLE hProcess = OpenProcess(PROCESS_VM_READ, NULL, procId);
 static std::vector<Packet> packets = {
 	// 0 D1 CHANNEL FADER
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x3FC5458, {})),
-	// 1 D1 CFX KNOB 
+	// 1 D1 CFX KNOB
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x50, 0x128, 0x100, 0x0, 0xE0, 0xB0})),
 	// 2 D1 LOW FILTER KNOB
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EA8, {})),
@@ -99,8 +99,6 @@ static std::vector<Packet> packets = {
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4E98, {})),
 	// 5 D1 SONG ID
 	Packet(sizeof(4), FindDMAAddy(hProcess, base + 0x03F929E8, {0x60, 0x88, 0x20, 0x2A0, 0x38})),
-	// 6 D1 IS PLAYING
-	Packet(sizeof(unsigned char), FindDMAAddy(hProcess, base + 0x03F92C60, {0x20, 0x2D0, 0x70, 0x40, 0x150, 0x188})),
 	// 7 D1 CURRENT TIME
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03F964C8, {0x40, 0x110, 0x288, 0xA8, 0x40, 0x150, 0x138})),
 	// 8 D1 TEMPO
@@ -111,38 +109,36 @@ static std::vector<Packet> packets = {
 	// 10 D2 CFX KNOB
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x50, 0x128, 0x40, 0x10, 0xE0, 0xB0})),
 	// 11 D2 LOW FILTER KNOB
-	Packet( sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EC0, {})),
+	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EC0, {})),
 	// 12 D2 MID FILTER KNOB
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EB8, {})),
 	// 13 D2 HIGH FILTER KNOB
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4EB0, {})),
 	// 14 D2 SONG ID
 	Packet(sizeof(4), FindDMAAddy(hProcess, base + 0x03F929E8, {0x70, 0x10, 0x18, 0x200, 0x198, 0x8, 0x3B8})),
-	// 15 D2 IS PLAYING
-	Packet(sizeof(unsigned char), FindDMAAddy(hProcess, base + 0x03F929E8, {0x70, 0x30, 0x108, 0x40, 0x150, 0x188})),
 	// 16 D2 CURRENT TIME
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {
-																			0x28,
-																			0x10,
-																			0x68,
-																			0x3E0,
-																			0xF8,
-																			0x8,
-																			0x138,
-																		})),
+																		0x28,
+																		0x10,
+																		0x68,
+																		0x3E0,
+																		0xF8,
+																		0x8,
+																		0x138,
+																	})),
 	// 17 D2 TEMPO
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x10, 0x68, 0x3E0, 0xF8, 0x8, 0x120})),
 
 	// 18 CROSSFADER
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03FA3638, {
-																			0x18,
-																			0x18,
-																			0x18,
-																			0x8,
-																			0x38,
-																			0x20,
-																			0x178,
-																		})),
+																		0x18,
+																		0x18,
+																		0x18,
+																		0x8,
+																		0x38,
+																		0x20,
+																		0x178,
+																	})),
 };
 Packet *packet;
 

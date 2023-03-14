@@ -30,7 +30,7 @@ struct Work
     uv_work_t request;
     Persistent<Function> callback;
     uv_async_t async;
-    std::vector<std::variant<double, uint32_t, unsigned char>> *data;
+    std::vector<std::variant<double, uint32_t>> *data;
 };
 
 #define DOUBLE_SIZE ((int)sizeof(double))
@@ -96,11 +96,6 @@ void AsyncCb(uv_async_t *handle)
             uint32_t val = std::get<uint32_t>((*work->data)[i]);
             arr->Set(isolate->GetCurrentContext(), i, Integer::NewFromUnsigned(isolate, val));
         }
-        else if (std::holds_alternative<unsigned char>((*work->data)[i]))
-        {
-            unsigned char val = std::get<unsigned char>((*work->data)[i]);
-            arr->Set(isolate->GetCurrentContext(), i, Boolean::New(isolate, (bool)val));
-        }
     }
 
     Local<Value> argv[1] = {arr};
@@ -126,8 +121,7 @@ void WorkAsync(uv_work_t *req)
 
     while (true)
     {
-        // strAbsolutePath.c_str()
-        HMODULE dllHandle = LoadLibrary("./reader.dll");
+        HMODULE dllHandle = LoadLibrary(strAbsolutePath.c_str());
         if (dllHandle == NULL)
         {
             // Handle error
@@ -149,7 +143,7 @@ void WorkAsync(uv_work_t *req)
         if (_mystruct->data != mystruct->data)
         {
             _mystruct->data = mystruct->data;
-            std::vector<std::variant<double, uint32_t, unsigned char>> *data = new std::vector<std::variant<double, uint32_t, unsigned char>>();
+            std::vector<std::variant<double, uint32_t>> *data = new std::vector<std::variant<double, uint32_t>>();
 
             data->push_back(ToDouble(_mystruct->data.begin(), _mystruct->data.begin() + 8));
             data->push_back(ToDouble(_mystruct->data.begin() + 8, _mystruct->data.begin() + 16));
@@ -157,21 +151,18 @@ void WorkAsync(uv_work_t *req)
             data->push_back(ToDouble(_mystruct->data.begin() + 24, _mystruct->data.begin() + 32));
             data->push_back(ToDouble(_mystruct->data.begin() + 32, _mystruct->data.begin() + 40));
             data->push_back(ToUint32(_mystruct->data.begin() + 40, _mystruct->data.begin() + 44));
-            data->push_back(_mystruct->data[45]);
-            data->push_back(ToDouble(_mystruct->data.begin() + 45, _mystruct->data.begin() + 53));
-            data->push_back(ToDouble(_mystruct->data.begin() + 53, _mystruct->data.begin() + 60));
+            data->push_back(ToDouble(_mystruct->data.begin() + 44, _mystruct->data.begin() + 52));
+            data->push_back(ToDouble(_mystruct->data.begin() + 52, _mystruct->data.begin() + 60));
 
-            data->push_back(ToDouble(_mystruct->data.begin() + 61, _mystruct->data.begin() + 69));
-            data->push_back(ToDouble(_mystruct->data.begin() + 69, _mystruct->data.begin() + 77));
-            data->push_back(ToDouble(_mystruct->data.begin() + 77, _mystruct->data.begin() + 85));
-            data->push_back(ToDouble(_mystruct->data.begin() + 85, _mystruct->data.begin() + 93));
-            data->push_back(ToDouble(_mystruct->data.begin() + 93, _mystruct->data.begin() + 101));
-            data->push_back(ToUint32(_mystruct->data.begin() + 101, _mystruct->data.begin() + 105));
-            data->push_back(_mystruct->data[106]);
-            data->push_back(ToDouble(_mystruct->data.begin() + 106, _mystruct->data.begin() + 114));
-            data->push_back(ToDouble(_mystruct->data.begin() + 114, _mystruct->data.begin() + 122));
-
-            data->push_back(ToDouble(_mystruct->data.begin() + 122, _mystruct->data.begin() + 130));
+            data->push_back(ToDouble(_mystruct->data.begin() + 60, _mystruct->data.begin() + 68));
+            data->push_back(ToDouble(_mystruct->data.begin() + 68, _mystruct->data.begin() + 76));
+            data->push_back(ToDouble(_mystruct->data.begin() + 76, _mystruct->data.begin() + 84));
+            data->push_back(ToDouble(_mystruct->data.begin() + 84, _mystruct->data.begin() + 92));
+            data->push_back(ToDouble(_mystruct->data.begin() + 92, _mystruct->data.begin() + 100));
+            data->push_back(ToUint32(_mystruct->data.begin() + 100, _mystruct->data.begin() + 104));
+            data->push_back(ToDouble(_mystruct->data.begin() + 104, _mystruct->data.begin() + 112));
+            data->push_back(ToDouble(_mystruct->data.begin() + 112, _mystruct->data.begin() + 120));
+            data->push_back(ToDouble(_mystruct->data.begin() + 120, _mystruct->data.begin() + 128));
             work->data = data;
             uv_async_send(&work->async);
         }
