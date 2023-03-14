@@ -5,34 +5,16 @@
 #include <thread>
 #include <iostream>
 #include <filesystem>
+#include <variant>
 
 using namespace v8;
 
-struct MyStruct
+struct ChangesStruct
 {
-    double d1ChannelFader = 0.0;
-    double d1CfxKnob = 0.0;
-    double d1LowFilter = 0.0;
-    double d1MidFilter = 0.0;
-    double d1HighFilter = 0.0;
-    uint32_t d1SongId = 0;
-    int d1IsPlaying = -1;
-    double d1CurrentTime = 0.0;
-    double d1CalculatedTempo = 0.0;
-
-    double d2ChannelFader = 0.0;
-    double d2CfxKnob = 0.0;
-    double d2LowFilter = 0.0;
-    double d2MidFilter = 0.0;
-    double d2HighFilter = 0.0;
-    uint32_t d2SongId = 0;
-    int d2IsPlaying = -1;
-    double d2CurrentTime = 0.0;
-    double d2CalculatedTempo = 0.0;
-    double crossfader = 0.0;
+    std::vector<unsigned char> data;
 };
 
-typedef MyStruct *(*DLLFunction1)();
+typedef ChangesStruct *(*DLLFunction1)();
 
 std::string GetCurrentDirectory()
 {
@@ -48,8 +30,49 @@ struct Work
     uv_work_t request;
     Persistent<Function> callback;
     uv_async_t async;
-    MyStruct *data;
+    std::vector<std::variant<double, uint32_t, unsigned char>> *data;
 };
+
+#define DOUBLE_SIZE ((int)sizeof(double))
+
+const int LITTLE_ENDIAN = 1234;
+const int BIG_ENDIAN = 4321;
+
+double ToDouble(std::vector<unsigned char>::const_iterator begin, std::vector<unsigned char>::const_iterator end, int byteOrder = LITTLE_ENDIAN)
+{
+    double retVal = 0;
+    unsigned char *p = (unsigned char *)&retVal;
+
+    if (byteOrder == BIG_ENDIAN)
+    {
+        for (int32_t i = 0; i < DOUBLE_SIZE; i++)
+        {
+            p[i] = *(end - (i + 1));
+        }
+    }
+
+    if (byteOrder == LITTLE_ENDIAN)
+    {
+        for (int32_t i = 0; i < DOUBLE_SIZE; i++)
+        {
+            p[i] = *(begin + i);
+        }
+    }
+
+    return retVal;
+}
+
+uint32_t ToUint32(std::vector<unsigned char>::const_iterator begin, std::vector<unsigned char>::const_iterator end)
+{
+    std::vector<unsigned char> v(begin, end);
+    std::reverse(v.begin(), v.end());
+    uint32_t result = 0;
+    result |= v[0] << 24;
+    result |= v[1] << 16;
+    result |= v[2] << 8;
+    result |= v[3];
+    return result;
+}
 
 void AsyncCb(uv_async_t *handle)
 {
@@ -58,130 +81,31 @@ void AsyncCb(uv_async_t *handle)
     Work *work = static_cast<Work *>(handle->data);
 
     Local<Function> callback = Local<Function>::New(isolate, work->callback);
+    Local<Array> arr = Array::New(isolate);
 
-    Local<Object> obj = Object::New(isolate);
-    int updatedValues = 0;
-
-    if (work->data->d1ChannelFader)
+    // Add each element of the vector to the array
+    for (size_t i = 0; i < work->data->size(); i++)
     {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1ChannelFader").ToLocalChecked(), Number::New(isolate, work->data->d1ChannelFader));
-        updatedValues++;
+        if (std::holds_alternative<double>((*work->data)[i]))
+        {
+            double val = std::get<double>((*work->data)[i]);
+            arr->Set(isolate->GetCurrentContext(), i, Number::New(isolate, val));
+        }
+        else if (std::holds_alternative<uint32_t>((*work->data)[i]))
+        {
+            uint32_t val = std::get<uint32_t>((*work->data)[i]);
+            arr->Set(isolate->GetCurrentContext(), i, Integer::NewFromUnsigned(isolate, val));
+        }
+        else if (std::holds_alternative<unsigned char>((*work->data)[i]))
+        {
+            unsigned char val = std::get<unsigned char>((*work->data)[i]);
+            arr->Set(isolate->GetCurrentContext(), i, Boolean::New(isolate, (bool)val));
+        }
     }
 
-    if (work->data->d1CfxKnob)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CfxKnob").ToLocalChecked(), Number::New(isolate, work->data->d1CfxKnob));
-        updatedValues++;
-    }
+    Local<Value> argv[1] = {arr};
 
-    if (work->data->d1LowFilter)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1LowFilter").ToLocalChecked(), Number::New(isolate, work->data->d1LowFilter));
-        updatedValues++;
-    }
-
-    if (work->data->d1MidFilter)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1MidFilter").ToLocalChecked(), Number::New(isolate, work->data->d1MidFilter));
-        updatedValues++;
-    }
-
-    if (work->data->d1HighFilter)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1HighFilter").ToLocalChecked(), Number::New(isolate, work->data->d1HighFilter));
-        updatedValues++;
-    }
-
-    if (work->data->d1SongId)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1SongId").ToLocalChecked(), Number::New(isolate, work->data->d1SongId));
-        updatedValues++;
-    }
-
-    if (work->data->d1IsPlaying != -1)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1IsPlaying").ToLocalChecked(), Boolean::New(isolate, (bool)work->data->d1IsPlaying));
-        updatedValues++;
-    }
-
-    if (work->data->d1CurrentTime)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CurrentTime").ToLocalChecked(), Number::New(isolate, work->data->d1CurrentTime));
-        updatedValues++;
-    }
-
-    if (work->data->d1CalculatedTempo)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d1CalculatedTempo").ToLocalChecked(), Number::New(isolate, work->data->d1CalculatedTempo));
-        updatedValues++;
-    }
-
-    if (work->data->d2ChannelFader)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2ChannelFader").ToLocalChecked(), Number::New(isolate, work->data->d2ChannelFader));
-        updatedValues++;
-    }
-
-    if (work->data->d2CfxKnob)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CfxKnob").ToLocalChecked(), Number::New(isolate, work->data->d2CfxKnob));
-        updatedValues++;
-    }
-
-    if (work->data->d2LowFilter)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2LowFilter").ToLocalChecked(), Number::New(isolate, work->data->d2LowFilter));
-        updatedValues++;
-    }
-
-    if (work->data->d2MidFilter)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2MidFilter").ToLocalChecked(), Number::New(isolate, work->data->d2MidFilter));
-        updatedValues++;
-    }
-
-    if (work->data->d2HighFilter)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2HighFilter").ToLocalChecked(), Number::New(isolate, work->data->d2HighFilter));
-        updatedValues++;
-    }
-
-    if (work->data->d2SongId)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2SongId").ToLocalChecked(), Number::New(isolate, work->data->d2SongId));
-        updatedValues++;
-    }
-
-    if (work->data->d2IsPlaying != -1)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2IsPlaying").ToLocalChecked(), Boolean::New(isolate, (bool)work->data->d2IsPlaying));
-        updatedValues++;
-    }
-
-    if (work->data->d2CurrentTime)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CurrentTime").ToLocalChecked(), Number::New(isolate, work->data->d2CurrentTime));
-        updatedValues++;
-    }
-
-    if (work->data->d2CalculatedTempo)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "d2CalculatedTempo").ToLocalChecked(), Number::New(isolate, work->data->d2CalculatedTempo));
-        updatedValues++;
-    }
-
-    if (work->data->crossfader)
-    {
-        obj->Set(isolate->GetCurrentContext(), String::NewFromUtf8(isolate, "crossfader").ToLocalChecked(), Number::New(isolate, work->data->crossfader));
-        updatedValues++;
-    }
-
-    if (updatedValues != 0)
-    {
-        Local<Value> argv[1] = {obj};
-        callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
-    }
-
+    callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
     delete work->data;
 }
 
@@ -198,12 +122,12 @@ void WorkAsync(uv_work_t *req)
 
     Work *work = static_cast<Work *>(req->data);
 
-    MyStruct *_mystruct = new MyStruct();
-    int updatedValues = 0;
+    ChangesStruct *_mystruct = new ChangesStruct();
 
     while (true)
     {
-        HMODULE dllHandle = LoadLibrary(strAbsolutePath.c_str());
+        // strAbsolutePath.c_str()
+        HMODULE dllHandle = LoadLibrary("./reader.dll");
         if (dllHandle == NULL)
         {
             // Handle error
@@ -220,185 +144,36 @@ void WorkAsync(uv_work_t *req)
             FreeLibrary(dllHandle);
         }
 
-        MyStruct *mystruct = getData();
-        MyStruct *data = new MyStruct();
+        ChangesStruct *mystruct = getData();
 
-        if (mystruct->d1ChannelFader != _mystruct->d1ChannelFader)
+        if (_mystruct->data != mystruct->data)
         {
-            double d1ChannelFader = mystruct->d1ChannelFader;
-            _mystruct->d1ChannelFader = d1ChannelFader;
-            data->d1ChannelFader = d1ChannelFader;
+            _mystruct->data = mystruct->data;
+            std::vector<std::variant<double, uint32_t, unsigned char>> *data = new std::vector<std::variant<double, uint32_t, unsigned char>>();
 
-            updatedValues++;
-        }
+            data->push_back(ToDouble(_mystruct->data.begin(), _mystruct->data.begin() + 8));
+            data->push_back(ToDouble(_mystruct->data.begin() + 8, _mystruct->data.begin() + 16));
+            data->push_back(ToDouble(_mystruct->data.begin() + 16, _mystruct->data.begin() + 24));
+            data->push_back(ToDouble(_mystruct->data.begin() + 24, _mystruct->data.begin() + 32));
+            data->push_back(ToDouble(_mystruct->data.begin() + 32, _mystruct->data.begin() + 40));
+            data->push_back(ToUint32(_mystruct->data.begin() + 40, _mystruct->data.begin() + 44));
+            data->push_back(_mystruct->data[45]);
+            data->push_back(ToDouble(_mystruct->data.begin() + 45, _mystruct->data.begin() + 53));
+            data->push_back(ToDouble(_mystruct->data.begin() + 53, _mystruct->data.begin() + 60));
 
-        if (mystruct->d1CfxKnob != _mystruct->d1CfxKnob)
-        {
-            double d1CfxKnob = mystruct->d1CfxKnob;
-            _mystruct->d1CfxKnob = d1CfxKnob;
-            data->d1CfxKnob = d1CfxKnob;
-            updatedValues++;
-        }
+            data->push_back(ToDouble(_mystruct->data.begin() + 61, _mystruct->data.begin() + 69));
+            data->push_back(ToDouble(_mystruct->data.begin() + 69, _mystruct->data.begin() + 77));
+            data->push_back(ToDouble(_mystruct->data.begin() + 77, _mystruct->data.begin() + 85));
+            data->push_back(ToDouble(_mystruct->data.begin() + 85, _mystruct->data.begin() + 93));
+            data->push_back(ToDouble(_mystruct->data.begin() + 93, _mystruct->data.begin() + 101));
+            data->push_back(ToUint32(_mystruct->data.begin() + 101, _mystruct->data.begin() + 105));
+            data->push_back(_mystruct->data[106]);
+            data->push_back(ToDouble(_mystruct->data.begin() + 106, _mystruct->data.begin() + 114));
+            data->push_back(ToDouble(_mystruct->data.begin() + 114, _mystruct->data.begin() + 122));
 
-        if (mystruct->d1LowFilter != _mystruct->d1LowFilter)
-        {
-            double d1LowFilter = mystruct->d1LowFilter;
-
-            _mystruct->d1LowFilter = d1LowFilter;
-            data->d1LowFilter = d1LowFilter;
-            updatedValues++;
-        }
-
-        if (mystruct->d1MidFilter != _mystruct->d1MidFilter)
-        {
-            double d1MidFilter = mystruct->d1MidFilter;
-
-            _mystruct->d1MidFilter = d1MidFilter;
-            data->d1MidFilter = d1MidFilter;
-            updatedValues++;
-        }
-
-        if (mystruct->d1HighFilter != _mystruct->d1HighFilter)
-        {
-            double d1HighFilter = mystruct->d1HighFilter;
-
-            _mystruct->d1HighFilter = d1HighFilter;
-            data->d1HighFilter = d1HighFilter;
-            updatedValues++;
-        }
-
-        if (mystruct->d1SongId != _mystruct->d1SongId)
-        {
-            uint32_t d1SongId = mystruct->d1SongId;
-            _mystruct->d1SongId = d1SongId;
-            data->d1SongId = d1SongId;
-            updatedValues++;
-        }
-
-        if (mystruct->d1IsPlaying != _mystruct->d1IsPlaying)
-        {
-            int d1IsPlaying = mystruct->d1IsPlaying;
-
-            _mystruct->d1IsPlaying = d1IsPlaying;
-            data->d1IsPlaying = d1IsPlaying;
-            updatedValues++;
-        }
-
-        if (mystruct->d1CurrentTime != _mystruct->d1CurrentTime)
-        {
-            double d1CurrentTime = mystruct->d1CurrentTime;
-
-            _mystruct->d1CurrentTime = d1CurrentTime;
-            data->d1CurrentTime = d1CurrentTime;
-            updatedValues++;
-        }
-
-        if (mystruct->d1CalculatedTempo != _mystruct->d1CalculatedTempo)
-        {
-            double d1CalculatedTempo = mystruct->d1CalculatedTempo;
-
-            _mystruct->d1CalculatedTempo = d1CalculatedTempo;
-            data->d1CalculatedTempo = d1CalculatedTempo;
-            updatedValues++;
-        }
-
-        if (mystruct->d2ChannelFader != _mystruct->d2ChannelFader)
-        {
-            double d2ChannelFader = mystruct->d2ChannelFader;
-            _mystruct->d2ChannelFader = d2ChannelFader;
-            data->d2ChannelFader = d2ChannelFader;
-
-            updatedValues++;
-        }
-
-        if (mystruct->d2CfxKnob != _mystruct->d2CfxKnob)
-        {
-            double d2CfxKnob = mystruct->d2CfxKnob;
-            _mystruct->d2CfxKnob = d2CfxKnob;
-            data->d2CfxKnob = d2CfxKnob;
-            updatedValues++;
-        }
-
-        if (mystruct->d2LowFilter != _mystruct->d2LowFilter)
-        {
-            double d2LowFilter = mystruct->d2LowFilter;
-
-            _mystruct->d2LowFilter = d2LowFilter;
-            data->d2LowFilter = d2LowFilter;
-            updatedValues++;
-        }
-
-        if (mystruct->d2MidFilter != _mystruct->d2MidFilter)
-        {
-            double d2MidFilter = mystruct->d2MidFilter;
-
-            _mystruct->d2MidFilter = d2MidFilter;
-            data->d2MidFilter = d2MidFilter;
-            updatedValues++;
-        }
-
-        if (mystruct->d2HighFilter != _mystruct->d2HighFilter)
-        {
-            double d2HighFilter = mystruct->d2HighFilter;
-
-            _mystruct->d2HighFilter = d2HighFilter;
-            data->d2HighFilter = d2HighFilter;
-            updatedValues++;
-        }
-
-        if (mystruct->d2SongId != _mystruct->d2SongId)
-        {
-            uint32_t d2SongId = mystruct->d2SongId;
-            _mystruct->d2SongId = d2SongId;
-            data->d2SongId = d2SongId;
-            updatedValues++;
-        }
-
-        if (mystruct->d2IsPlaying != _mystruct->d2IsPlaying)
-        {
-            int d2IsPlaying = mystruct->d2IsPlaying;
-
-            _mystruct->d2IsPlaying = d2IsPlaying;
-            data->d2IsPlaying = d2IsPlaying;
-            updatedValues++;
-        }
-
-        if (mystruct->d2CurrentTime != _mystruct->d2CurrentTime)
-        {
-            double d2CurrentTime = mystruct->d2CurrentTime;
-
-            _mystruct->d2CurrentTime = d2CurrentTime;
-            data->d2CurrentTime = d2CurrentTime;
-            updatedValues++;
-        }
-
-        if (mystruct->d2CalculatedTempo != _mystruct->d2CalculatedTempo)
-        {
-            double d2CalculatedTempo = mystruct->d2CalculatedTempo;
-
-            _mystruct->d2CalculatedTempo = d2CalculatedTempo;
-            data->d2CalculatedTempo = d2CalculatedTempo;
-            updatedValues++;
-        }
-
-        if (mystruct->crossfader != _mystruct->crossfader)
-        {
-            double crossfader = mystruct->crossfader;
-
-            _mystruct->crossfader = crossfader;
-            data->crossfader = crossfader;
-            updatedValues++;
-        }
-
-        if (updatedValues != 0)
-        {
-            updatedValues = 0;
+            data->push_back(ToDouble(_mystruct->data.begin() + 122, _mystruct->data.begin() + 130));
             work->data = data;
             uv_async_send(&work->async);
-        }
-        else
-        {
-            delete data;
         }
 
         FreeLibrary(dllHandle);
