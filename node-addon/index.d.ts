@@ -1,3 +1,25 @@
+export enum ChangeIndexes {
+  d1ChannelFader = 0,
+  d1CfxKnob = 1,
+  d1LowFilter = 2,
+  d1MidFilter = 3,
+  d1HighFilter = 4,
+  d1SongId = 5,
+  d1CurrentTime = 6,
+  d1Tempo = 7,
+
+  d2ChannelFader = 8,
+  d2CfxKnob = 9,
+  d2LowFilter = 10,
+  d2MidFilter = 11,
+  d2HighFilter = 12,
+  d2SongId = 13,
+  d2CurrentTime = 14,
+  d2Tempo = 15,
+
+  crossfader = 16,
+}
+
 export type Changes = [
   d1ChannelFader: number,
   d1CfxKnob: number,
@@ -7,8 +29,8 @@ export type Changes = [
   d1SongId: number,
   d1CurrentTime: number,
   d1Tempo: number,
-  d1ChannelFader: number,
 
+  d2ChannelFader: number,
   d2CfxKnob: number,
   d2LowFilter: number,
   d2MidFilter: number,
