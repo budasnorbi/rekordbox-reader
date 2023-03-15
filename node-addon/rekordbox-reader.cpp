@@ -96,7 +96,6 @@ void AsyncCb(uv_async_t *handle)
 
     Local<Value> argv[1] = {arr};
     callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
-    delete work->data;
 }
 
 void WorkAsync(uv_work_t *req)
@@ -113,6 +112,7 @@ void WorkAsync(uv_work_t *req)
     Work *work = static_cast<Work *>(req->data);
 
     ChangesStruct *_mystruct = new ChangesStruct();
+    std::vector<std::variant<double, uint32_t>> *data = new std::vector<std::variant<double, uint32_t>>();
 
     while (true)
     {
@@ -138,7 +138,7 @@ void WorkAsync(uv_work_t *req)
         if (_mystruct->data != mystruct->data)
         {
             _mystruct->data = mystruct->data;
-            std::vector<std::variant<double, uint32_t>> *data = new std::vector<std::variant<double, uint32_t>>();
+            data->clear();
 
             data->push_back(ToDouble(_mystruct->data.begin(), _mystruct->data.begin() + 8));
             data->push_back(ToDouble(_mystruct->data.begin() + 8, _mystruct->data.begin() + 16));
@@ -158,14 +158,12 @@ void WorkAsync(uv_work_t *req)
             data->push_back(ToDouble(_mystruct->data.begin() + 104, _mystruct->data.begin() + 112));
             data->push_back(ToDouble(_mystruct->data.begin() + 112, _mystruct->data.begin() + 120));
             data->push_back(ToDouble(_mystruct->data.begin() + 120, _mystruct->data.begin() + 128));
+
             work->data = data;
             uv_async_send(&work->async);
         }
-        else
-        {
-            delete mystruct;
-        }
 
+        delete mystruct;
         FreeLibrary(dllHandle);
     }
 }
