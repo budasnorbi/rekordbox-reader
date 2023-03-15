@@ -1,6 +1,5 @@
 #pragma once
 #include <vector>
-#include <variant>
 
 #ifdef READER_EXPORTS
 #define READER_API __declspec(dllexport)
@@ -8,7 +7,8 @@
 #define READER_API __declspec(dllimport)
 #endif
 
-struct Changes {
+struct Changes
+{
 	std::vector<unsigned char> data = {};
 };
 

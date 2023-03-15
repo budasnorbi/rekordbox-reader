@@ -1,10 +1,4 @@
 #include "pch.h"
-#include <TlHelp32.h>
-#include <utility>
-#include <vector>
-#include "reader.h"
-#include <iostream>
-#include <variant>
 
 DWORD GetProcId(const wchar_t *procName)
 {

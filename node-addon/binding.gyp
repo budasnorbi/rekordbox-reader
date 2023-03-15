@@ -1,9 +1,9 @@
 {
   "targets": [
     {
-      'target_name': 'addon',
+      'target_name': 'rekordbox-reader',
       'sources': [
-        'addon.cpp'
+        'rekordbox-reader.cpp'
       ],
       'include_dirs': ["<!@(node -p \"require('node-addon-api').include\")"],
       'dependencies': ["<!(node -p \"require('node-addon-api').gyp\")"],
@@ -15,16 +15,7 @@
         ],
         "cflags_cc!": [
           "-fno-exceptions"
-        ],
-        "xcode_settings": {
-          "OTHER_CFLAGS": [
-            "-fno-exceptions"
-          ],
-          "OTHER_CPLUSPLUSFLAGS": [
-            "-fno-exceptions"
-          ]
-        },
-      
+        ]      
       }
   ]
 }

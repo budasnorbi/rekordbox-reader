@@ -1,9 +1,5 @@
 #include <uv.h>
 #include <node.h>
-#include <node_buffer.h>
-#include <chrono>
-#include <thread>
-#include <iostream>
 #include <filesystem>
 #include <variant>
 
@@ -99,7 +95,6 @@ void AsyncCb(uv_async_t *handle)
     }
 
     Local<Value> argv[1] = {arr};
-
     callback->Call(isolate->GetCurrentContext(), isolate->GetCurrentContext()->Global(), 1, argv);
     delete work->data;
 }
@@ -166,9 +161,12 @@ void WorkAsync(uv_work_t *req)
             work->data = data;
             uv_async_send(&work->async);
         }
+        else
+        {
+            delete mystruct;
+        }
 
         FreeLibrary(dllHandle);
-        delete mystruct;
     }
 }
 

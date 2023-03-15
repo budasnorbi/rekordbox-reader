@@ -49,6 +49,6 @@ async function getSongByID(songId) {
 }
 
 module.exports = {
-  trackChanges: require("./build/Release/addon"),
+  trackChanges: require("./build/Release/rekordbox-reader"),
   getSongByID,
 };
