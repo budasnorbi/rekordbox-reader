@@ -1,6 +1,9 @@
 /**/node_modules/
 .DS_STORE
-node-addon/build
+node-addon-win/build
 reader-dll/x64
 reader-dll/reader/x64
 reader-dll/.vs
+reader-dylib/build
+node-addon-mac/build
+

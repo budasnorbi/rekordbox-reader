@@ -173,13 +173,3 @@ The getSongByID is an async function and it resolves with the following interfac
   updated_at: number;
 }
 ```
-
-Rekordbox versions that i saved
-
-- 6.6.11(lastest)
-
-  - (win) https://cdn.rekordbox.com/files/20230306171653/Install_rekordbox_x64_6_6_11.zip
-  - (mac) https://cdn.rekordbox.com/files/20230306173735/Install_rekordbox_6_6_11.pkg_.zip
-
-- 6.6.10
-  - (win) https://cdn.rekordbox.com/files/20230201181231/Install_rekordbox_x64_6_6_10.zip

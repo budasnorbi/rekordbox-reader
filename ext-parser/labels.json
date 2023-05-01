@@ -1,0 +1,72 @@
+[
+  {
+    "name": "Intro 2",
+    "beat": 1,
+    "barEnd": 0
+  },
+  {
+    "name": "Up 1",
+    "beat": 17,
+    "barEnd": 4
+  },
+  {
+    "name": "Chorus 1",
+    "beat": 37,
+    "barEnd": 9
+  },
+  {
+    "name": "Chorus 1",
+    "beat": 69,
+    "barEnd": 17
+  },
+  {
+    "name": "Up 1",
+    "beat": 101,
+    "barEnd": 25
+  },
+  {
+    "name": "Chorus 1",
+    "beat": 133,
+    "barEnd": 33
+  },
+  {
+    "name": "Up 1",
+    "beat": 165,
+    "barEnd": 41
+  },
+  {
+    "name": "Chorus 1",
+    "beat": 197,
+    "barEnd": 49
+  },
+  {
+    "name": "Down",
+    "beat": 229,
+    "barEnd": 57
+  },
+  {
+    "name": "Up 1",
+    "beat": 293,
+    "barEnd": 73
+  },
+  {
+    "name": "Up 1",
+    "beat": 325,
+    "barEnd": 81
+  },
+  {
+    "name": "Chorus 1",
+    "beat": 389,
+    "barEnd": 97
+  },
+  {
+    "name": "Chorus 1",
+    "beat": 421,
+    "barEnd": 105
+  },
+  {
+    "name": "Outro 1",
+    "beat": 453,
+    "barEnd": 113
+  }
+]

@@ -1,0 +1,15 @@
+{
+    "compilerOptions": {
+        "module": "commonjs",
+        "moduleResolution": "node",
+        "pretty": true,
+        "target": "es6",
+        "baseUrl": "./"
+    },
+    "include": [
+        "index.d.ts"
+    ],
+    "exclude": [
+        "node_modules"
+    ]
+}
