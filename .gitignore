@@ -6,4 +6,4 @@ reader-dll/reader/x64
 reader-dll/.vs
 reader-dylib/build
 node-addon-mac/build
-
+ext-parser/parses
