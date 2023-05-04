@@ -101,4 +101,5 @@ export interface djmdContent {
 declare module "rekordbox-reader" {
   export function trackChanges(callback: (changes: Changes) => void): void;
   export function getSongByID(songId: number | string): Promise<djmdContent>;
+  export function getSonPhrases(songId: number | string): Promise<any>;
 }

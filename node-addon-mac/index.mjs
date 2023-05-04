@@ -1,5 +1,6 @@
-const getAppDataPath = require("appdata-path");
-const sqlite3 = require("@journeyapps/sqlcipher").verbose();
+import getAppDataPath from "appdata-path";
+import sqlite3 from "@journeyapps/sqlcipher";
+import { phraseParser } from "./phrase-parser.mjs";
 const masterDBPath = `${getAppDataPath()}\\Pioneer\\rekordbox\\master.db`;
 const decryptKey =
   "402fd482c38817c35ffa8ffb8c7d93143b749e7d315df7a81732a1ff43608497";
@@ -48,7 +49,21 @@ async function getSongByID(songId) {
   });
 }
 
+async function getSonPhrases(songId) {
+  const song = await getSongByID(songId);
+  if (!song) {
+    return null;
+  }
+  return phraseParser(
+    `${getAppDataPath()}\\Pioneer\\rekordbox\\share\\${song.AnalysisDataPath.replace(
+      ".DAT",
+      ".EXT"
+    )})`
+  );
+}
+
 module.exports = {
   trackChanges: require("./build/Release/rekordbox-reader"),
   getSongByID,
+  getSonPhrases,
 };
