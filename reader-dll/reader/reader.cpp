@@ -92,7 +92,7 @@ static std::vector<Packet> packets = {
 	// 4 D1 HIGH FILTER KNOB
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03ED4E98, {})),
 	// 5 D1 SONG ID
-	Packet(sizeof(4), FindDMAAddy(hProcess, base + 0x03F929E8, {0x60, 0x88, 0x20, 0x2A0, 0x38})),
+	Packet(sizeof(4), FindDMAAddy(hProcess, base + 0x03F929E8, {0x28, 0x10, 0x68, 0x3E8, 0x58, 0x0, 0x1C0, 0x1C})),
 	// 7 D1 CURRENT TIME
 	Packet(sizeof(double), FindDMAAddy(hProcess, base + 0x03F964C8, {0x40, 0x110, 0x288, 0xA8, 0x40, 0x150, 0x138})),
 	// 8 D1 TEMPO
